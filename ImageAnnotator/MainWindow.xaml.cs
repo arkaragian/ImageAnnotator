@@ -20,16 +20,16 @@ public enum DrawingState {
 }
 
 public partial class MainWindow : Window {
-    private Double zoomMax = 5;
-    private Double zoomMin = 0.5;
-    private Double zoomSpeed = 0.001;
-    private Double zoom = 1;
+    private double zoomMax = 5;
+    private double zoomMin = 0.5;
+    private double zoomSpeed = 0.001;
+    private double zoom = 1;
 
-    private List<Line> lines = new List<Line>();
+    private List<Line> lines = new();
     private Point endPoint;
     private Line currentLine;
 
-    private TextBox textBox;
+    private TextBox? textBox;
 
     private bool isEraserMode = false;
     private double eraserRadius = 10.0; // Adjust the radius as needed
@@ -39,7 +39,7 @@ public partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
-        this.Title = "MLT-SnapShot Annotation";
+        Title = "Image Annotator";
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -156,18 +156,19 @@ public partial class MainWindow : Window {
 
     }
 
+    /// <summary>
+    /// Redraw the screen
+    /// </summary>
     private void ReDraw() {
-
         MainCanvas.Children.Clear();
-
         DrawGrid(MainCanvas);
         List<Line> lines = ViewModel.LineSet;
         List<TextBlock> textBlocks = ViewModel.TextBlocksSet;
         foreach (Line line in lines) {
-            MainCanvas.Children.Add(line);
+            _ = MainCanvas.Children.Add(line);
         }
         foreach (TextBlock textBlock in textBlocks) {
-            MainCanvas.Children.Add(textBlock);
+            _ = MainCanvas.Children.Add(textBlock);
         }
     }
 
@@ -223,11 +224,14 @@ public partial class MainWindow : Window {
         }
     }
 
+    /// <summary>
+    /// Draws a grid for an image
+    /// </summary>
     private void DrawGrid(Canvas canvas) {
         double HCanvas = MainCanvas.ActualHeight;
         double WCanvas = MainCanvas.ActualWidth;
 
-        Border border = new Border() {
+        Border border = new() {
             Width = WCanvas,
             Height = HCanvas,
             Background = Brushes.Transparent,
@@ -235,11 +239,11 @@ public partial class MainWindow : Window {
             BorderThickness = new Thickness(3)
         };
 
-        canvas.Children.Add(border);
+        _ = canvas.Children.Add(border);
 
         for (int i = 0; i < HCanvas / 20; i++) {
             double space = i * 20;
-            Line line = new Line() {
+            Line line = new() {
                 X1 = 0,
                 X2 = WCanvas,
                 Y1 = space,
@@ -291,36 +295,36 @@ public partial class MainWindow : Window {
     }
 
     // Toggle eraser mode.
-    private void EraserButton_Click(object sender, RoutedEventArgs e) {
-        if (ViewModel.State != DrawingState.Eraser) {
-            ViewModel.State = DrawingState.Eraser;
-        } else {
-            ViewModel.State = DrawingState.Idle;
-            ReDraw();
-        }
-
-        if (ViewModel.State != DrawingState.Eraser) {
-            EraserButton.Content = "Eraser"; // Change button text to indicate drawing mode.
-        } else {
-            EraserButton.Content = "Drawing"; // Change button text to indicate eraser mode.
-        }
-    }
+    // private void EraserButton_Click(object sender, RoutedEventArgs e) {
+    //     if (ViewModel.State != DrawingState.Eraser) {
+    //         ViewModel.State = DrawingState.Eraser;
+    //     } else {
+    //         ViewModel.State = DrawingState.Idle;
+    //         ReDraw();
+    //     }
+    //
+    //     if (ViewModel.State != DrawingState.Eraser) {
+    //         EraserButton.Content = "Eraser"; // Change button text to indicate drawing mode.
+    //     } else {
+    //         EraserButton.Content = "Drawing"; // Change button text to indicate eraser mode.
+    //     }
+    // }
 
     private void AddTextButton_Click(object sender, RoutedEventArgs e) {
         ReDraw();
         ViewModel.State = DrawingState.Text;
     }
 
-    private void NewButton_Click(object sender, RoutedEventArgs e) {
+    private void LoadImageTest(object sender, RoutedEventArgs e) {
         MainCanvas.Background = Brushes.White; ;
 
         MainCanvas.Children.Clear();
 
         DrawGrid(MainCanvas);
 
-        ViewModel = new ReticleViewModel();
-
-        ViewModel.State = DrawingState.Idle;
+        ViewModel = new ReticleViewModel {
+            State = DrawingState.Idle
+        };
     }
 
     private void LoadReticleButton_Click(object sender, RoutedEventArgs e) {
@@ -338,15 +342,14 @@ public partial class MainWindow : Window {
 
         }
     }
-    private void LoadSnapShotButton_Click(object sender, RoutedEventArgs e) {
-        OpenFileDialog op = new OpenFileDialog();
-        op.Title = "Select a picture";
-        op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png;*.bmp"; //+
-                                                                       //"JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-                                                                       //"Portable Network Graphic (*.png)|*.png|" +
-                                                                       //"BitMap Images (*.bmp)|*.bmp|";
-        if (op.ShowDialog() == true) {
-            string imagePath = op.FileName;
+    private void LoadImage(object sender, RoutedEventArgs e) {
+        OpenFileDialog openDialog = new() {
+            Title = "Select a picture",
+            Filter = "All supported graphics|*.jpg;*.jpeg;*.png;*.bmp" //+
+        };
+
+        if (openDialog.ShowDialog() is true) {
+            string imagePath = openDialog.FileName;
 
             // Clear existing children of the Canvas
             MainCanvas.Children.Clear();
@@ -354,11 +357,14 @@ public partial class MainWindow : Window {
             //imgPhoto.Source = new BitmapImage(new Uri(imagePath));
 
 
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri(imagePath));
+            ImageBrush imageBrush = new() {
+                ImageSource = new BitmapImage(new Uri(imagePath))
+            };
 
             MainCanvas.Background = imageBrush;
             ReDraw();
+        } else {
+            Console.WriteLine("Cannot open dialog!");
         }
     }
 

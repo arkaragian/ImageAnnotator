@@ -17,52 +17,55 @@
     </Window.CommandBindings>-->
    
     <Grid>
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>                
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>-->
+     <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+    </Grid.RowDefinitions>
 
-        <DockPanel>
-            <ToolBarTray DockPanel.Dock="Top">
+        <DockPanel Grid.Row="0" Grid.Column="0">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <!--<ToolBarTray DockPanel.Dock="Top">
                 <ToolBar>
                     <Button Content="New" x:Name="NewButton" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="New Design" Click="NewButton_Click" >
-                        <!--<Image Source="images/new-document.png" />-->
+                        --><!--<Image Source="images/new-document.png" />--><!--
                     </Button>
-                    <!--<Button Command="Draw" ToolTip="Pencil Tool">
+                    --><!--<Button Command="Draw" ToolTip="Pencil Tool">
                         <Image Source="/images/pencil.png" />
-                    </Button>-->
+                    </Button>--><!--
                     <Button Content="Eraser" x:Name="EraserButton" Click="EraserButton_Click" ToolTip="Eraser Tool">
-                        <!--<Image Source="/images/eraser.png" />-->
+                        --><!--<Image Source="/images/eraser.png" />--><!--
                     </Button>
                     <Button Content="Text" x:Name="AddTextButton" Click="AddTextButton_Click" ToolTip="Text Addition Tool">
-                        <!--<Image Source="/images/eraser.png" />-->
+                        --><!--<Image Source="/images/eraser.png" />--><!--
                     </Button>
                     
                 </ToolBar>
                 <ToolBar>
                     <Button Content="Load Reticle" x:Name="LoadReticleButton" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Load Design" Click="LoadReticleButton_Click">
-                        <!--<Image Source="images/up-loading.png" />-->
+                        --><!--<Image Source="images/up-loading.png" />--><!--
                     </Button>
                     <Button Content="Load SnapShot" x:Name="LoadSnapShotButton" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Load Design" Click="LoadSnapShotButton_Click">
-                        <!--<Image Source="images/up-loading.png" />-->
+                        --><!--<Image Source="images/up-loading.png" />--><!--
                     </Button>
                     <Button Content="Save" x:Name="SaveButton" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Save Design" Click="SaveButton_Click">
-                        <!--<Image Source="images/diskette.png" />-->
+                        --><!--<Image Source="images/diskette.png" />--><!--
                     </Button>
                     <Button Content="Save BitMap Image" x:Name="SaveImageButton" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Save Image" Click="SaveImageButton_Click">
-                        <!--<Image Source="images/diskette.png" />-->
+                        --><!--<Image Source="images/diskette.png" />--><!--
                     </Button>
 
                 </ToolBar>
-            </ToolBarTray>
+            </ToolBarTray>-->
         </DockPanel>
 
         <!--<Canvas Height="480" Width="640" x:Name="GridCanvas" Focusable="False" Margin="320,112,320,112" Canvas.ZIndex="1">
         </Canvas>-->
 
-        <Canvas Height="480" Width="640" x:Name="MainCanvas" Focusable ="True" MouseWheel="MainCanvas_MouseWheel" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" Background ="White" Margin="320,112,320,112">
+        <Canvas Grid.Row="1" Grid.Column="0" Height="480" Width="640" x:Name="MainCanvas" Focusable ="True" MouseWheel="MainCanvas_MouseWheel" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" Background ="White" Margin="320,112,320,112">
         </Canvas>
 
         <!--<Image Name="imgPhoto" Stretch="Fill" Width="640" Height="480"/>-->
@@ -71,6 +74,11 @@
             <Button Content="_Open File" HorizontalAlignment="Center" Margin="0,150,0,0" VerticalAlignment="Top" Width="120" Click="LoadButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
             <Button Content="_Save File" HorizontalAlignment="Center" Margin="0,250,0,0" VerticalAlignment="Top" Width="120" Click="SaveButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
         </Grid>-->
+        <StatusBar Grid.Row="2" Grid.Column="0">
+            <StatusBarItem>
+                <TextBlock>Downloading File</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
 
     </Grid>
 </Window>
