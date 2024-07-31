@@ -1,16 +1,8 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using ImageAnnotator.ViewModel;
+using Microsoft.Win32;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using System.Windows.Media.Imaging;
-using SnapShotAnnotation.ViewModel;
-using System.Diagnostics;
 
-namespace SnapShotAnnotation;
+namespace ImageAnnotator;
 
 public enum DrawingState {
     Idle,
@@ -20,26 +12,46 @@ public enum DrawingState {
 }
 
 public partial class MainWindow : Window {
-    private double zoomMax = 5;
-    private double zoomMin = 0.5;
-    private double zoomSpeed = 0.001;
-    private double zoom = 1;
 
-    private List<Line> lines = new();
-    private Point endPoint;
-    private Line currentLine;
-
-    private TextBox? textBox;
-
-    private bool isEraserMode = false;
-    private double eraserRadius = 10.0; // Adjust the radius as needed
-
-
-    private ReticleViewModel ViewModel = new ReticleViewModel();
+    /// <summary>
+    /// The model of the image
+    /// </summary>
+    private readonly ImageViewModel ImageView;
 
     public MainWindow() {
         InitializeComponent();
+        ImageView = new() {
+            ImageModel = new()
+        };
         Title = "Image Annotator";
+        this.DataContext = ImageView;
+    }
+
+    /// <summary>
+    /// Loads an image in the ImageModel
+    /// </summary>
+    private void LoadImage(object sender, RoutedEventArgs e) {
+        OpenFileDialog openDialog = new() {
+            Title = "Select a picture",
+            Filter = "All supported graphics|*.jpg;*.jpeg;*.png;*.bmp" //+
+        };
+
+        if (openDialog.ShowDialog() is true) {
+
+            ImageView.ImageModel.ImagePath = openDialog.FileName;
+
+            //imgPhoto.Source = new BitmapImage(new Uri(imagePath));
+
+
+            // ImageBrush imageBrush = new() {
+            //     ImageSource = new BitmapImage(new Uri(imagePath))
+            // };
+            //
+            // MainCanvas.Background = imageBrush;
+            // ReDraw();
+        } else {
+            _ = MessageBox.Show("Cannot Select a Picture", "Error");
+        }
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -340,31 +352,6 @@ public partial class MainWindow : Window {
     //        }
 
 
-    //    }
-    //}
-    //private void LoadImage(object sender, RoutedEventArgs e) {
-    //    OpenFileDialog openDialog = new() {
-    //        Title = "Select a picture",
-    //        Filter = "All supported graphics|*.jpg;*.jpeg;*.png;*.bmp" //+
-    //    };
-
-    //    if (openDialog.ShowDialog() is true) {
-    //        string imagePath = openDialog.FileName;
-
-    //        // Clear existing children of the Canvas
-    //        MainCanvas.Children.Clear();
-
-    //        //imgPhoto.Source = new BitmapImage(new Uri(imagePath));
-
-
-    //        ImageBrush imageBrush = new() {
-    //            ImageSource = new BitmapImage(new Uri(imagePath))
-    //        };
-
-    //        MainCanvas.Background = imageBrush;
-    //        ReDraw();
-    //    } else {
-    //        Console.WriteLine("Cannot open dialog!");
     //    }
     //}
 

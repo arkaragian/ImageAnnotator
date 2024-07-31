@@ -1,11 +1,11 @@
-﻿<Window x:Class="SnapShotAnnotation.MainWindow"
+﻿<Window x:Class="ImageAnnotator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SnapShotAnnotation"
+        xmlns:local="clr-namespace:ImageAnnotator.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
+        Title="MainWindow" Height="720" Width="1280">
     <!--Icon="pack://application:,,,/icon.ico">-->
 
     <!--<Window.CommandBindings>
@@ -15,13 +15,16 @@
         <CommandBinding Command="Draw" CanExecute="CommonCommandBinding_CanExecute" />
         <CommandBinding Command="Erase" CanExecute="CommonCommandBinding_CanExecute" /
     </Window.CommandBindings>-->
+
+    <Window.DataContext>
+        <local:ImageViewModel />
+    </Window.DataContext>
    
     <StackPanel Orientation="Vertical">
         <DockPanel>
             <Menu>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Open Picture"></MenuItem>
-                    <!--<MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>-->
+                    <MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>
                 </MenuItem>
             </Menu>
             <!--<ToolBarTray DockPanel.Dock="Top">
@@ -61,7 +64,7 @@
         <!--<Canvas Height="480" Width="640" x:Name="GridCanvas" Focusable="False" Margin="320,112,320,112" Canvas.ZIndex="1">
         </Canvas>-->
 
-        <Image Name="MainCanvas" Source="C:\Users\akar\source\repos\RDOrganisation\ERP\ERP_Part_Entry\Epicor\images\partEntry.png">
+        <Image Source="{Binding ImagePath}">
             
         </Image>
 
@@ -76,7 +79,7 @@
         </Grid>-->
         <StatusBar>
             <StatusBarItem>
-                <TextBlock>Downloading File</TextBlock>
+            <TextBlock Text="{Binding ImageDisplayPath}"/>
             </StatusBarItem>
         </StatusBar>
 
