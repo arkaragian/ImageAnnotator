@@ -16,16 +16,12 @@
         <CommandBinding Command="Erase" CanExecute="CommonCommandBinding_CanExecute" /
     </Window.CommandBindings>-->
    
-    <Grid>
-     <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-    </Grid.RowDefinitions>
-
-        <DockPanel Grid.Row="0" Grid.Column="0">
+    <StackPanel Orientation="Vertical">
+        <DockPanel>
             <Menu>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>
+                    <MenuItem Header="_Open Picture"></MenuItem>
+                    <!--<MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>-->
                 </MenuItem>
             </Menu>
             <!--<ToolBarTray DockPanel.Dock="Top">
@@ -65,8 +61,12 @@
         <!--<Canvas Height="480" Width="640" x:Name="GridCanvas" Focusable="False" Margin="320,112,320,112" Canvas.ZIndex="1">
         </Canvas>-->
 
-        <Canvas Grid.Row="1" Grid.Column="0" Height="480" Width="640" x:Name="MainCanvas" Focusable ="True" MouseWheel="MainCanvas_MouseWheel" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" Background ="White" Margin="320,112,320,112">
-        </Canvas>
+        <Image Name="MainCanvas" Source="C:\Users\akar\source\repos\RDOrganisation\ERP\ERP_Part_Entry\Epicor\images\partEntry.png">
+            
+        </Image>
+
+        <!--<Canvas Height="480" Width="640" x:Name="MainCanvas" Focusable ="True" MouseWheel="MainCanvas_MouseWheel" MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown" MouseMove="MainCanvas_MouseMove" Background ="White" Margin="320,112,320,112">
+        </Canvas>-->
 
         <!--<Image Name="imgPhoto" Stretch="Fill" Width="640" Height="480"/>-->
 
@@ -74,11 +74,11 @@
             <Button Content="_Open File" HorizontalAlignment="Center" Margin="0,150,0,0" VerticalAlignment="Top" Width="120" Click="LoadButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
             <Button Content="_Save File" HorizontalAlignment="Center" Margin="0,250,0,0" VerticalAlignment="Top" Width="120" Click="SaveButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
         </Grid>-->
-        <StatusBar Grid.Row="2" Grid.Column="0">
+        <StatusBar>
             <StatusBarItem>
                 <TextBlock>Downloading File</TextBlock>
             </StatusBarItem>
         </StatusBar>
 
-    </Grid>
+    </StackPanel>
 </Window>
