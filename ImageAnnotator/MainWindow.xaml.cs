@@ -1,6 +1,8 @@
 ﻿using ImageAnnotator.ViewModel;
 using Microsoft.Win32;
+using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ImageAnnotator;
 
@@ -16,7 +18,7 @@ public partial class MainWindow : Window {
     /// <summary>
     /// The model of the image
     /// </summary>
-    private readonly ImageViewModel ImageView;
+    public readonly ImageViewModel ImageView;
 
     public MainWindow() {
         InitializeComponent();
@@ -25,6 +27,7 @@ public partial class MainWindow : Window {
         };
         Title = "Image Annotator";
         this.DataContext = ImageView;
+        WindowInfo.DataContext = this;
     }
 
     /// <summary>
@@ -38,7 +41,12 @@ public partial class MainWindow : Window {
 
         if (openDialog.ShowDialog() is true) {
 
-            ImageView.ImageModel.ImagePath = openDialog.FileName;
+            //ImageView.ImageModel.ImagePath = openDialog.FileName;
+            Exception? r = ImageView.LoadImage(openDialog.FileName);
+
+            if (r is not null) {
+                MessageBox.Show(r.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             //imgPhoto.Source = new BitmapImage(new Uri(imagePath));
 
@@ -56,6 +64,13 @@ public partial class MainWindow : Window {
 
     private void Window_Loaded(object sender, RoutedEventArgs e) {
         //DrawGrid(MainCanvas);
+    }
+
+    private void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
+        // Get the current mouse position relative to the Canvas
+        Point position = e.GetPosition(ImageDisplayControl);
+
+        ImageView.UpdateCursorPosition(new System.Drawing.Point() { X=(int)position.X, Y=(int)position.Y});
     }
 
     // Zoom on Mouse wheel

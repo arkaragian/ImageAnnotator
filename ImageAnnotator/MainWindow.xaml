@@ -16,12 +16,18 @@
         <CommandBinding Command="Erase" CanExecute="CommonCommandBinding_CanExecute" /
     </Window.CommandBindings>-->
 
-    <Window.DataContext>
-        <local:ImageViewModel />
-    </Window.DataContext>
+    <!-- <Window.DataContext> -->
+    <!--     <local:ImageViewModel /> -->
+    <!-- </Window.DataContext> -->
+
    
-    <StackPanel Orientation="Vertical">
-        <DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
             <Menu>
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>
@@ -64,7 +70,7 @@
         <!--<Canvas Height="480" Width="640" x:Name="GridCanvas" Focusable="False" Margin="320,112,320,112" Canvas.ZIndex="1">
         </Canvas>-->
 
-        <Image Source="{Binding ImagePath}">
+        <Image Grid.Row="1" Source="{Binding ImagePath}" Name="ImageDisplayControl" d:DesignHeight="400" MouseMove="Image_MouseMove">
             
         </Image>
 
@@ -77,11 +83,44 @@
             <Button Content="_Open File" HorizontalAlignment="Center" Margin="0,150,0,0" VerticalAlignment="Top" Width="120" Click="LoadButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
             <Button Content="_Save File" HorizontalAlignment="Center" Margin="0,250,0,0" VerticalAlignment="Top" Width="120" Click="SaveButton_Click" Height="50" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold"></Button>
         </Grid>-->
-        <StatusBar>
+        <StatusBar Grid.Row="2" >
             <StatusBarItem>
-            <TextBlock Text="{Binding ImageDisplayPath}"/>
+                <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding ImageDisplayPath}"/>
+                        <Separator Width="100px"/>
+
+                        <!-- <StackPanel Orientation="Horizontal"> -->
+                        <!--     <Label Content="Image Width:"/> -->
+                        <!--     <Label Content="{Binding ImageSize.Width}"/> -->
+                        <!--     <Label Content="Image Height:"/> -->
+                        <!--     <Label Content="{Binding ImageSize.Height}"/> -->
+                        <!-- </StackPanel> -->
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Image X:"/>
+                            <Label Content="{Binding CursorPosition.X}"/>
+                            <Label Content="Image Y:"/>
+                            <Label Content="{Binding CursorPosition.Y}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Norm X:"/>
+                            <Label Content="{Binding NormalizedCursorPosition.X}"  ContentStringFormat="{}{0:#,#.00}"/>
+                            <Label Content="Norm Y:"/>
+                            <Label Content="{Binding NormalizedCursorPosition.Y}"  ContentStringFormat="{}{0:#,#.00}"/>
+                        </StackPanel>
+
+                        <!-- For this control we want the window as the datacotext. We have set this up in code-->
+                        <StackPanel Name="WindowInfo" Orientation="Horizontal">
+                            <Label Content="Window Width:"/>
+                            <Label Content="{Binding Width}"/>
+                            <!--<Separator Width="100px"/>-->
+                            <Label Content="Window Height:"/>
+                            <Label Content="{Binding Height}"/>
+                        </StackPanel>
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
 
-    </StackPanel>
+    </Grid>
 </Window>
