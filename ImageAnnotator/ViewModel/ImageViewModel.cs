@@ -56,6 +56,17 @@ public class ImageViewModel : INotifyPropertyChanged {
     public Exception? LoadImage(string filename) {
         try {
             ImageModel.Image = new Bitmap(filename);
+            IAnnotation a = new LineAnnotation() {
+                StartPoint = new() {
+                    X = 10,
+                    Y = 20
+                },
+                EndPoint = new() {
+                    X = 20,
+                    Y = 20
+                },
+            };
+            ImageModel.AddAnotation(a);
         } catch (Exception ex) {
             ImageModel.Image = null;
             return ex;
