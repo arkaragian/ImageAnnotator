@@ -50,7 +50,7 @@ public class LineAnnotation : IAnnotation {
 }
 
 public class RectangleAnnotation : IAnnotation {
-    public void ToDrawing() {
+    public Drawing ToDrawing() {
         throw new System.NotImplementedException();
     }
 }

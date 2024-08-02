@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace ImageAnnotator;
 
@@ -44,9 +43,6 @@ public partial class MainWindow : Window {
             if (r is not null) {
                 _ = MessageBox.Show(r.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-        } else {
-            _ = MessageBox.Show("Cannot Select a Picture", "Error");
         }
     }
 

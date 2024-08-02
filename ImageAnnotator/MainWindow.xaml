@@ -20,6 +20,14 @@
     <!--     <local:ImageViewModel /> -->
     <!-- </Window.DataContext> -->
 
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="LoadImage" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+            <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+    </Window.InputBindings>
+
    
     <Grid>
         <Grid.RowDefinitions>
@@ -30,14 +38,25 @@
         <DockPanel Grid.Row="0">
             <Menu>
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Open Picture" Click="LoadImage"></MenuItem>
+                    <MenuItem Header="_Open Picture" Command="Open"></MenuItem>
                     <MenuItem Header="_Quit" Click="Exit"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
 
+        <!-- <Image Grid.Row="1" Source="{Binding ImagePath}" Name="ImageDisplayControl" d:DesignHeight="400" MouseMove="Image_MouseMove"/> -->
 
-        <Image Grid.Row="1" Source="{Binding ImagePath}" Name="ImageDisplayControl" d:DesignHeight="400" MouseMove="Image_MouseMove"/>
+        <Grid Grid.Row="1">
+            <Image Source="{Binding ImagePath}"
+                   Name="ImageDisplayControl"
+                   d:DesignHeight="400"
+                   MouseMove="Image_MouseMove"/>
+            <Canvas Background="Transparent"
+                    Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                    Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                    Name="AnnotationCanvas"
+                    MouseMove="Image_MouseMove"/>
+        </Grid>
 
         <StatusBar Grid.Row="2" >
             <StatusBarItem>
