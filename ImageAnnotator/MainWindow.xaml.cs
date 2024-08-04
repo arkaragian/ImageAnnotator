@@ -23,7 +23,8 @@ public partial class MainWindow : Window {
         InitializeComponent();
         ImageView = new() {
             ImageModel = new(),
-            AnnotationCanvas = AnnotationCanvas
+            AnnotationCanvas = AnnotationCanvas,
+            GridCanvas = GridCanvas
         };
         Title = "Image Annotator";
         DataContext = ImageView;

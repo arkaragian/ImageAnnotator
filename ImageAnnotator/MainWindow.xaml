@@ -54,6 +54,10 @@
             <Canvas Background="Transparent"
                     Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
                     Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                    Name="GridCanvas"/>
+            <Canvas Background="Transparent"
+                    Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                    Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
                     Name="AnnotationCanvas"
                     MouseMove="Image_MouseMove"/>
         </Grid>

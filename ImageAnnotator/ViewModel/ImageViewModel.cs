@@ -12,15 +12,37 @@ public struct DoublePoint {
     public double Y { get; set; }
 }
 
+public enum InputState {
+    /// <summary>
+    /// waiting for user input
+    /// </summary>
+    Idle,
+
+    /// <summary>
+    /// In first user input for a line
+    /// </summary>
+    LineFirstPoint,
+
+    /// <summary>
+    /// In rectangle first input for a line
+    /// </summary>
+    RectangleFirstInput
+}
+
+/// <summary>
+/// Indicates the state of the application
+/// </summary>
+public struct ApplicationState {
+    /// <summary>
+    /// Indicates if an image is loaded in the application.
+    /// </summary>
+    public bool ImageLoaded { get; set; }
+}
+
 /// <summary>
 /// The view model that is currently displayed
 /// </summary>
 public class ImageViewModel : INotifyPropertyChanged {
-
-    //Bitmap bitmap = new Bitmap(1000, 800, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-
-
-    //private ImageModel _imageModel;
 
     /// <summary>
     /// The image model that this view model deals with
@@ -52,7 +74,15 @@ public class ImageViewModel : INotifyPropertyChanged {
     /// </summary>
     public Size ImageSize { get; set; }
 
+    /// <summary>
+    /// The canvas onto which all the annotations are drawn
+    /// </summary>
     public Canvas? AnnotationCanvas { get; set; }
+
+    /// <summary>
+    /// The canvas where the grid is drawn
+    /// </summary>
+    public Canvas? GridCanvas { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -82,7 +112,8 @@ public class ImageViewModel : INotifyPropertyChanged {
                     X2 = 100,
                     Y2 = 100,
 
-                    StrokeThickness = 1
+                    StrokeThickness = 10,
+                    Stroke = System.Windows.Media.Brushes.Black
                 };
                 _ = AnnotationCanvas.Children.Add(l);
             }
@@ -96,6 +127,8 @@ public class ImageViewModel : INotifyPropertyChanged {
         OnPropertyChanged(nameof(ImageSize));
         OnPropertyChanged(nameof(ImagePath));
         OnPropertyChanged(nameof(ImageDisplayPath));
+
+        //Use the Control Size to Draw a canvas
 
         return null;
     }
