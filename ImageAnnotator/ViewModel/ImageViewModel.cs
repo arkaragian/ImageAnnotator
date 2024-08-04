@@ -2,6 +2,8 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace ImageAnnotator.ViewModel;
 
@@ -45,7 +47,12 @@ public class ImageViewModel : INotifyPropertyChanged {
     /// </summary>
     public DoublePoint NormalizedCursorPosition { get; set; }
 
+    /// <summary>
+    /// The size of the image
+    /// </summary>
     public Size ImageSize { get; set; }
+
+    public Canvas? AnnotationCanvas { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -67,6 +74,18 @@ public class ImageViewModel : INotifyPropertyChanged {
                 },
             };
             ImageModel.AddAnotation(a);
+            if (AnnotationCanvas is not null) {
+                Line l = new() {
+                    X1 = 0,
+                    Y1 = 0,
+
+                    X2 = 100,
+                    Y2 = 100,
+
+                    StrokeThickness = 1
+                };
+                _ = AnnotationCanvas.Children.Add(l);
+            }
         } catch (Exception ex) {
             ImageModel.Image = null;
             return ex;
@@ -81,10 +100,19 @@ public class ImageViewModel : INotifyPropertyChanged {
         return null;
     }
 
-    public void UpdateCursorPosition(Point p) {
+    public void UpdateCursorPosition(Point p, Size controlSize) {
         CursorPosition = p;
         //NormalizedCursorPosition = new DoublePoint() { X = (double)ImageSize.Width / (double)p.X, Y = (double)ImageSize.Height / (double)p.Y };
-        NormalizedCursorPosition = new DoublePoint() { X = (double)p.X/ (double)ImageSize.Width, Y = (double)p.Y/ (double)ImageSize.Height };
+        //
+        //The Zero of the image is the top left. For for tikz is the bottom left.
+        NormalizedCursorPosition = new DoublePoint() {
+            X = (double)p.X / controlSize.Width,
+            Y = ((double)p.Y / controlSize.Height * -1) + 1
+        };
+
+        //To do the transformation we should assoumte a vector on the Normalti
+        //
+
         OnPropertyChanged(nameof(CursorPosition));
         OnPropertyChanged(nameof(NormalizedCursorPosition));
     }

@@ -17,15 +17,16 @@ public partial class MainWindow : Window {
     /// <summary>
     /// The model of the image
     /// </summary>
-    public readonly ImageViewModel ImageView;
+    private readonly ImageViewModel ImageView;
 
     public MainWindow() {
         InitializeComponent();
         ImageView = new() {
-            ImageModel = new()
+            ImageModel = new(),
+            AnnotationCanvas = AnnotationCanvas
         };
         Title = "Image Annotator";
-        this.DataContext = ImageView;
+        DataContext = ImageView;
         WindowInfo.DataContext = this;
     }
 
@@ -57,10 +58,21 @@ public partial class MainWindow : Window {
     /// Handles the movement of the mouse over the image control
     /// </summary>
     private void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
-        // Get the current mouse position relative to the Canvas
+        // Get the current mouse position. This however is not normalized to the size
+        // of the image. As the window may be resized.
         Point position = e.GetPosition(ImageDisplayControl);
 
-        ImageView.UpdateCursorPosition(new System.Drawing.Point() { X = (int)position.X, Y = (int)position.Y });
+        System.Drawing.Size s = new() {
+            Width = (int)ImageDisplayControl.ActualWidth,
+            Height = (int)ImageDisplayControl.ActualHeight,
+        };
+
+        System.Drawing.Point np = new() {
+            X = (int)position.X,
+            Y = (int)position.Y,
+        };
+
+        ImageView.UpdateCursorPosition(np, s);
     }
 
 }

@@ -72,9 +72,9 @@
                         <!-- </StackPanel> -->
 
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Image X:"/>
+                            <Label Content="Cursor X:"/>
                             <Label Content="{Binding CursorPosition.X}"/>
-                            <Label Content="Image Y:"/>
+                            <Label Content="Cursor Y:"/>
                             <Label Content="{Binding CursorPosition.Y}"/>
                         </StackPanel>
 
