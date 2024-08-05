@@ -93,30 +93,6 @@ public class ImageViewModel : INotifyPropertyChanged {
     public Exception? LoadImage(string filename) {
         try {
             ImageModel.Image = new Bitmap(filename);
-            IAnnotation a = new LineAnnotation() {
-                StartPoint = new() {
-                    X = 10,
-                    Y = 20
-                },
-                EndPoint = new() {
-                    X = 20,
-                    Y = 20
-                },
-            };
-            ImageModel.AddAnotation(a);
-            if (AnnotationCanvas is not null) {
-                Line l = new() {
-                    X1 = 0,
-                    Y1 = 0,
-
-                    X2 = 100,
-                    Y2 = 100,
-
-                    StrokeThickness = 10,
-                    Stroke = System.Windows.Media.Brushes.Black
-                };
-                _ = AnnotationCanvas.Children.Add(l);
-            }
         } catch (Exception ex) {
             ImageModel.Image = null;
             return ex;
@@ -128,9 +104,65 @@ public class ImageViewModel : INotifyPropertyChanged {
         OnPropertyChanged(nameof(ImagePath));
         OnPropertyChanged(nameof(ImageDisplayPath));
 
-        //Use the Control Size to Draw a canvas
+        // try {
+        //     DrawGrid(GridCanvas);
+        // } catch (Exception ex) {
+        //     return ex;
+        // }
 
         return null;
+    }
+
+    public static void DrawGrid(Canvas? canvas) {
+        if (canvas is null) {
+            return;
+        }
+
+        if (canvas.Width is 0) {
+            throw new InvalidOperationException("Zero canvas width!");
+        }
+
+        if (canvas.Height is 0) {
+            throw new InvalidOperationException("Zero canvas height!");
+        }
+
+        double w = canvas.Width;
+        double h = canvas.Height;
+        for (int i = 0; i < 11; i++) {
+            double step = (int)(w * i * 0.1);
+            Line l = new() {
+                X1 = step,
+                X2 = step,
+
+                Y1 = 0,
+                Y2 = h,
+
+                Stroke = System.Windows.Media.Brushes.LightSteelBlue,
+                StrokeThickness = 2
+                //Brush = System.Windows.Media.Brushes.Black
+
+            };
+
+            _ = canvas.Children.Add(l);
+        }
+
+        for (int i = 0; i < 11; i++) {
+            double step = (int)(h * i * 0.1);
+            Line l = new() {
+                Y1 = step,
+                Y2 = step,
+
+                X1 = 0,
+                X2 = w,
+
+                Stroke = System.Windows.Media.Brushes.LightSteelBlue,
+                StrokeThickness = 2
+                //Brush = System.Windows.Media.Brushes.Black
+
+            };
+
+            _ = canvas.Children.Add(l);
+        }
     }
 
     public void UpdateCursorPosition(Point p, Size controlSize) {

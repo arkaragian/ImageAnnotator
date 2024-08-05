@@ -43,9 +43,22 @@ public partial class MainWindow : Window {
         if (openDialog.ShowDialog() is true) {
             Exception? r = ImageView.LoadImage(openDialog.FileName);
             if (r is not null) {
-                _ = MessageBox.Show(r.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(r.Message + "/n" + r.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            // Defer drawing grid to allow layout pass to complete
+            _ = Dispatcher.BeginInvoke(new Action(() => {
+                try {
+                    ImageViewModel.DrawGrid(GridCanvas);
+                } catch (Exception ex) {
+                    _ = MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }), System.Windows.Threading.DispatcherPriority.Loaded);
+
+            //ImageViewModel.DrawGrid(GridCanvas);
         }
+
     }
 
     /// <summary>

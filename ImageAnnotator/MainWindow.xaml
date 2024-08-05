@@ -47,6 +47,7 @@
         <!-- <Image Grid.Row="1" Source="{Binding ImagePath}" Name="ImageDisplayControl" d:DesignHeight="400" MouseMove="Image_MouseMove"/> -->
 
         <Grid Grid.Row="1">
+            <!-- Elements in a grid canvas are overlayed on top each other-->
             <Image Source="{Binding ImagePath}"
                    Name="ImageDisplayControl"
                    d:DesignHeight="400"
