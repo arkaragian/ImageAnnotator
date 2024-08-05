@@ -58,7 +58,23 @@ public partial class MainWindow : Window {
 
             //ImageViewModel.DrawGrid(GridCanvas);
         }
+    }
 
+    private void ReDrawWindow(object sender, RoutedEventArgs e) {
+        /// TODO: This is a viewmodel method implementation
+        if (ImageView.ImageModel.Image is null) {
+            return;
+        }
+        GridCanvas.Children.Clear();
+
+        // Defer drawing grid to allow layout pass to complete
+        _ = Dispatcher.BeginInvoke(new Action(() => {
+            try {
+                ImageViewModel.DrawGrid(GridCanvas);
+            } catch (Exception ex) {
+                _ = MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }), System.Windows.Threading.DispatcherPriority.Loaded);
     }
 
     /// <summary>
