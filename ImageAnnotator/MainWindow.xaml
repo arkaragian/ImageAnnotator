@@ -10,18 +10,6 @@
         SizeChanged="ReDrawWindow">
     <!--Icon="pack://application:,,,/icon.ico">-->
 
-    <!--<Window.CommandBindings>
-        <CommandBinding Command="New" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Draw" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Erase" CanExecute="CommonCommandBinding_CanExecute" /
-    </Window.CommandBindings>-->
-
-    <!-- <Window.DataContext> -->
-    <!--     <local:ImageViewModel /> -->
-    <!-- </Window.DataContext> -->
-
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="LoadImage" />
         <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
@@ -76,8 +64,10 @@
 
             <GridSplitter Grid.Column="2" Width="5" HorizontalAlignment="Stretch" />
 
-            <!-- Elements in a grid canvas are overlayed on top each other that is
-            why we specify grid here-->
+            <!--
+                Elements in a grid canvas are overlayed on top each other that is
+                why we specify grid here
+            -->
             <Grid Grid.Column="3">
                 <Image Source="{Binding ImagePath}"
                        Name="ImageDisplayControl"
@@ -92,7 +82,7 @@
                         Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
                         Name="AnnotationCanvas"
                         MouseMove="Image_MouseMove"
-                        MouseDown="InsertionAction"/>
+                        MouseDown="AnnotationCanvasClick"/>
             </Grid>
         </Grid>
 

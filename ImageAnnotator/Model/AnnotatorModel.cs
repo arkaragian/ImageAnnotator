@@ -76,13 +76,16 @@ public class NodeAnnotation : IAnnotation {
     }
 
     public Shape ToShape() {
+        int Width = 10;
+        int Height = 10;
         return new Ellipse() {
             Stroke = Brushes.Black,
             Fill = Brushes.DarkBlue,
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center,
-            Width = 5,
-            Height = 5,
+            Width = Width,
+            Height = Height,
+            Margin = new Thickness(Point.X - (Width / 2.0), Point.Y - (Height / 2.0), 0, 0)
         };
     }
 }

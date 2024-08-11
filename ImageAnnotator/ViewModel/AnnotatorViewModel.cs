@@ -46,15 +46,6 @@ public enum InsertionType {
     Rectangle
 }
 
-/// <summary>
-/// Indicates the state of the application
-/// </summary>
-public struct ApplicationState {
-    /// <summary>
-    /// Indicates if an image is loaded in the application.
-    /// </summary>
-    public bool ImageLoaded { get; set; }
-}
 
 /// <summary>
 /// The view model that is currently displayed
@@ -80,6 +71,11 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// Defines the input state of the application
     /// </summary>
     public InputState CurrentInputState { get; private set; } = InputState.Idle;
+
+    /// <summary>
+    /// Defines the current awaited insertion type
+    /// </summary>
+    public InsertionType? CurrentInsertionType { get; private set; }
 
     /// <summary>
     /// The path of the image that is displayed to the user
@@ -112,6 +108,21 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     public Canvas? GridCanvas { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Indicates if the view is correctly setup to insert a node
+    /// </summary>
+    public bool CanInsertNode => CurrentInputState is InputState.Idle;
+
+    /// <summary>
+    /// Indicates if the view is waiting for any input input
+    /// </summary>
+    public bool IsWaitingForInput => CurrentInputState is InputState.WaitingForInput;
+
+    /// <summary>
+    /// Indicates if the view is waiting for a node input
+    /// </summary>
+    public bool IsWaitingForNodeInput => CurrentInsertionType is InsertionType.Node;
 
     /// <summary>
     /// Loads an image to the model
@@ -205,8 +216,6 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             throw new InvalidOperationException("Zero canvas height!");
         }
 
-        double w = canvas.Width;
-        double h = canvas.Height;
         foreach (IAnnotation a in ImageModel.Annotations) {
             _ = canvas.Children.Add(a.ToShape());
         }
@@ -233,9 +242,6 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public void Save(string filename) {
-        // ImageModel.Save(filename);
-    }
 
     /// <summary>
     /// Performs an insertion action
@@ -275,6 +281,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     public void BeginNodeInsertion() {
         StatusMessage = "Click on Image to insert node";
         CurrentInputState = InputState.WaitingForInput;
+        CurrentInsertionType = InsertionType.Node;
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
         return;
@@ -282,9 +289,16 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public void InsertNode(DoublePoint point) {
         StatusMessage = null;
-        OnPropertyChanged(nameof(StatusMessage));
 
         ImageModel.InsertNode(point);
+        CurrentInputState = InputState.Idle;
+        CurrentInsertionType = null;
+
+        DrawAnnotations(AnnotationCanvas);
+
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
         return;
     }
     //public bool Load(string filename) {

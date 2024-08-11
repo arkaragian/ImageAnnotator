@@ -6,17 +6,10 @@ using System.Windows.Input;
 
 namespace ImageAnnotator;
 
-public enum DrawingState {
-    Idle,
-    StartLineClicked,
-    Eraser,
-    Text,
-}
-
 public partial class MainWindow : Window {
 
     /// <summary>
-    /// The model of the image
+    /// The model of the application. All data are contained there.
     /// </summary>
     private readonly AnnotatorViewModel ViewModel;
 
@@ -32,13 +25,20 @@ public partial class MainWindow : Window {
         WindowInfo.DataContext = this;
     }
 
+    /// <summary>
+    /// Indicates if the node insertion command can be executed.
+    /// </summary>
     private void InsertNodeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-        e.CanExecute = ViewModel.CurrentInputState is InputState.Idle or InputState.WaitingForInput;
+        e.CanExecute = ViewModel.CanInsertNode;
     }
 
+
+    /// <summary>
+    /// Implements the logic of the command that is executed. At this point it set's up the application
+    /// to wait for a new node click.
+    /// </summary>
     private void InsertNodeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-        //Implement command logic here
-        ViewModel.InsertionAction(InsertionType.Node, point: null);
+        ViewModel.BeginNodeInsertion();
     }
 
     /// <summary>
@@ -70,10 +70,19 @@ public partial class MainWindow : Window {
         }
     }
 
-    private void InsertionAction(object sender, MouseEventArgs e) {
-        //The point at which the insertion will happen
+    /// <summary>
+    /// Handles all the clicks that happen in the canvas.
+    /// </summary>
+    private void AnnotationCanvasClick(object sender, MouseEventArgs e) {
+        //Only handle input is we are really waiting for one
+        if (!ViewModel.IsWaitingForInput) {
+            return;
+        }
+
         Point p = e.GetPosition(AnnotationCanvas);
-        ViewModel.InsertionAction(InsertionType.Node, p);
+        if (ViewModel.IsWaitingForNodeInput) {
+            ViewModel.InsertNode(p);
+        }
     }
 
 
