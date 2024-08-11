@@ -10,6 +10,22 @@ namespace ImageAnnotator.ViewModel;
 public struct DoublePoint {
     public double X { get; set; }
     public double Y { get; set; }
+
+
+    public static implicit operator DoublePoint(System.Windows.Point v) {
+        return new DoublePoint() {
+            X = v.X,
+            Y = v.Y
+        };
+    }
+
+
+    public static implicit operator System.Windows.Point(DoublePoint v) {
+        return new System.Windows.Point() {
+            X = v.X,
+            Y = v.Y
+        };
+    }
 }
 
 public enum InputState {
@@ -19,14 +35,15 @@ public enum InputState {
     Idle,
 
     /// <summary>
-    /// In first user input for a line
+    /// Indicates that application is waiting for user input
     /// </summary>
-    LineFirstPoint,
+    WaitingForInput,
+}
 
-    /// <summary>
-    /// In rectangle first input for a line
-    /// </summary>
-    RectangleFirstInput
+public enum InsertionType {
+    Node,
+    Line,
+    Rectangle
 }
 
 /// <summary>
@@ -42,17 +59,27 @@ public struct ApplicationState {
 /// <summary>
 /// The view model that is currently displayed
 /// </summary>
-public class ImageViewModel : INotifyPropertyChanged {
+public class AnnotatorViewModel : INotifyPropertyChanged {
 
     /// <summary>
     /// The image model that this view model deals with
     /// </summary>
-    public required ImageModel ImageModel { get; init; }
+    public required AnnotatorModel ImageModel { get; init; }
 
     /// <summary>
     /// The path of the image that the model holds
     /// </summary>
     public string? ImagePath => ImageModel.ImagePath;
+
+    /// <summary>
+    /// An ocasional status message to aid the user
+    /// </summary>
+    public string? StatusMessage { get; private set; }
+
+    /// <summary>
+    /// Defines the input state of the application
+    /// </summary>
+    public InputState CurrentInputState { get; private set; } = InputState.Idle;
 
     /// <summary>
     /// The path of the image that is displayed to the user
@@ -165,6 +192,26 @@ public class ImageViewModel : INotifyPropertyChanged {
         }
     }
 
+    public void DrawAnnotations(Canvas? canvas) {
+        if (canvas is null) {
+            return;
+        }
+
+        if (canvas.Width is 0) {
+            throw new InvalidOperationException("Zero canvas width!");
+        }
+
+        if (canvas.Height is 0) {
+            throw new InvalidOperationException("Zero canvas height!");
+        }
+
+        double w = canvas.Width;
+        double h = canvas.Height;
+        foreach (IAnnotation a in ImageModel.Annotations) {
+            _ = canvas.Children.Add(a.ToShape());
+        }
+    }
+
     public void UpdateCursorPosition(Point p, Size controlSize) {
         CursorPosition = p;
         //NormalizedCursorPosition = new DoublePoint() { X = (double)ImageSize.Width / (double)p.X, Y = (double)ImageSize.Height / (double)p.Y };
@@ -188,6 +235,57 @@ public class ImageViewModel : INotifyPropertyChanged {
 
     public void Save(string filename) {
         // ImageModel.Save(filename);
+    }
+
+    /// <summary>
+    /// Performs an insertion action
+    /// </summary>
+    public void InsertionAction(InsertionType itype, System.Windows.Point? point) {
+        if (ImageModel.Image is null) {
+            StatusMessage = "No Image is Loaded";
+            OnPropertyChanged(nameof(StatusMessage));
+            return;
+        }
+
+        switch ((itype, CurrentInputState)) {
+            case (InsertionType.Node, InputState.Idle):
+                BeginNodeInsertion();
+                break;
+            case (InsertionType.Node, InputState.WaitingForInput):
+                if (point is null) {
+                    throw new InvalidOperationException("Cannot insert a node at a null point");
+                }
+                InsertNode(point.Value);
+                break;
+            case (InsertionType.Line, InputState.Idle):
+                break;
+            case (InsertionType.Line, InputState.WaitingForInput):
+                break;
+            case (InsertionType.Rectangle, InputState.Idle):
+                break;
+            case (InsertionType.Rectangle, InputState.WaitingForInput):
+                break;
+            default:
+                throw new InvalidOperationException("Condition not handled!");
+        }
+
+        DrawAnnotations(AnnotationCanvas);
+    }
+
+    public void BeginNodeInsertion() {
+        StatusMessage = "Click on Image to insert node";
+        CurrentInputState = InputState.WaitingForInput;
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        return;
+    }
+
+    public void InsertNode(DoublePoint point) {
+        StatusMessage = null;
+        OnPropertyChanged(nameof(StatusMessage));
+
+        ImageModel.InsertNode(point);
+        return;
     }
     //public bool Load(string filename) {
     //    try {

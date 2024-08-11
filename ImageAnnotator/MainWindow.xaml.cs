@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace ImageAnnotator;
 
@@ -17,18 +18,27 @@ public partial class MainWindow : Window {
     /// <summary>
     /// The model of the image
     /// </summary>
-    private readonly ImageViewModel ImageView;
+    private readonly AnnotatorViewModel ViewModel;
 
     public MainWindow() {
         InitializeComponent();
-        ImageView = new() {
+        ViewModel = new() {
             ImageModel = new(),
             AnnotationCanvas = AnnotationCanvas,
             GridCanvas = GridCanvas
         };
         Title = "Image Annotator";
-        DataContext = ImageView;
+        DataContext = ViewModel;
         WindowInfo.DataContext = this;
+    }
+
+    private void InsertNodeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.CurrentInputState is InputState.Idle or InputState.WaitingForInput;
+    }
+
+    private void InsertNodeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+        //Implement command logic here
+        ViewModel.InsertionAction(InsertionType.Node, point: null);
     }
 
     /// <summary>
@@ -41,7 +51,7 @@ public partial class MainWindow : Window {
         };
 
         if (openDialog.ShowDialog() is true) {
-            Exception? r = ImageView.LoadImage(openDialog.FileName);
+            Exception? r = ViewModel.LoadImage(openDialog.FileName);
             if (r is not null) {
                 _ = MessageBox.Show(r.Message + "/n" + r.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -50,7 +60,7 @@ public partial class MainWindow : Window {
             // Defer drawing grid to allow layout pass to complete
             _ = Dispatcher.BeginInvoke(new Action(() => {
                 try {
-                    ImageViewModel.DrawGrid(GridCanvas);
+                    AnnotatorViewModel.DrawGrid(GridCanvas);
                 } catch (Exception ex) {
                     _ = MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -60,9 +70,16 @@ public partial class MainWindow : Window {
         }
     }
 
+    private void InsertionAction(object sender, MouseEventArgs e) {
+        //The point at which the insertion will happen
+        Point p = e.GetPosition(AnnotationCanvas);
+        ViewModel.InsertionAction(InsertionType.Node, p);
+    }
+
+
     private void ReDrawWindow(object sender, RoutedEventArgs e) {
         /// TODO: This is a viewmodel method implementation
-        if (ImageView.ImageModel.Image is null) {
+        if (ViewModel.ImageModel.Image is null) {
             return;
         }
         GridCanvas.Children.Clear();
@@ -70,7 +87,7 @@ public partial class MainWindow : Window {
         // Defer drawing grid to allow layout pass to complete
         _ = Dispatcher.BeginInvoke(new Action(() => {
             try {
-                ImageViewModel.DrawGrid(GridCanvas);
+                AnnotatorViewModel.DrawGrid(GridCanvas);
             } catch (Exception ex) {
                 _ = MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -102,7 +119,7 @@ public partial class MainWindow : Window {
             Y = (int)position.Y,
         };
 
-        ImageView.UpdateCursorPosition(np, s);
+        ViewModel.UpdateCursorPosition(np, s);
     }
 
 }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageAnnotator.ViewModel"
+        xmlns:self="clr-namespace:ImageAnnotator"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280"
         SizeChanged="ReDrawWindow">
@@ -23,6 +24,7 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="LoadImage" />
+        <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -42,26 +44,56 @@
                     <MenuItem Header="_Open Picture" Command="Open"></MenuItem>
                     <MenuItem Header="_Quit" Click="Exit"></MenuItem>
                 </MenuItem>
+
+                <MenuItem Header="_Anotate">
+                    <MenuItem Header="Insert _Node" Command="self:AnnotatorCommands.InsertNode"></MenuItem>
+                    <MenuItem Header="Insert _Line"  Name="InsertLine"> </MenuItem>
+                    <MenuItem Header="Insert _Rectangle"  Name="InsertRectangle"></MenuItem>
+                </MenuItem>
             </Menu>
         </DockPanel>
 
         <!-- <Image Grid.Row="1" Source="{Binding ImagePath}" Name="ImageDisplayControl" d:DesignHeight="400" MouseMove="Image_MouseMove"/> -->
 
         <Grid Grid.Row="1">
-            <!-- Elements in a grid canvas are overlayed on top each other-->
-            <Image Source="{Binding ImagePath}"
-                   Name="ImageDisplayControl"
-                   d:DesignHeight="400"
-                   MouseMove="Image_MouseMove"/>
-            <Canvas Background="Transparent"
-                    Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
-                    Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
-                    Name="GridCanvas"/>
-            <Canvas Background="Transparent"
-                    Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
-                    Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
-                    Name="AnnotationCanvas"
-                    MouseMove="Image_MouseMove"/>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <Label Content="Annotations" Background="Gray"/>
+                <ItemsControl >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="Hello"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <GridSplitter Grid.Column="2" Width="5" HorizontalAlignment="Stretch" />
+
+            <!-- Elements in a grid canvas are overlayed on top each other that is
+            why we specify grid here-->
+            <Grid Grid.Column="3">
+                <Image Source="{Binding ImagePath}"
+                       Name="ImageDisplayControl"
+                       d:DesignHeight="400"
+                       MouseMove="Image_MouseMove"/>
+                <Canvas Background="Transparent"
+                        Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                        Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                        Name="GridCanvas"/>
+                <Canvas Background="Transparent"
+                        Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                        Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                        Name="AnnotationCanvas"
+                        MouseMove="Image_MouseMove"
+                        MouseDown="InsertionAction"/>
+            </Grid>
         </Grid>
 
         <StatusBar Grid.Row="2" >
@@ -70,12 +102,8 @@
                         <Label Content="{Binding ImageDisplayPath}"/>
                         <Separator Width="100px" Visibility="Hidden"/>
 
-                        <!-- <StackPanel Orientation="Horizontal"> -->
-                        <!--     <Label Content="Image Width:"/> -->
-                        <!--     <Label Content="{Binding ImageSize.Width}"/> -->
-                        <!--     <Label Content="Image Height:"/> -->
-                        <!--     <Label Content="{Binding ImageSize.Height}"/> -->
-                        <!-- </StackPanel> -->
+                        <Label Content="{Binding StatusMessage}"/>
+                        <Separator Width="100px" Visibility="Hidden"/>
 
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Cursor X:"/>
