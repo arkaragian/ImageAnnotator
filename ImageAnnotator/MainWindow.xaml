@@ -20,12 +20,14 @@
     </Window.InputBindings>
 
    
+    <!-- This grid contains the meneu the "Main Interaction Surface" and the status bar-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
+
         <DockPanel Grid.Row="0">
             <Menu>
                 <MenuItem Header="_File">
@@ -51,24 +53,25 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="1" Orientation="Vertical">
+            <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Content="Annotations" Background="Gray"/>
-                <ItemsControl >
+                <ItemsControl Name="AnnotationList" ItemsSource="{Binding Annotations}">
+                    <!-- The bindings in here assume the datacontext within as being each element -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Label Content="Hello"/>
+                            <Label Content="{Binding Name}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
 
-            <GridSplitter Grid.Column="2" Width="5" HorizontalAlignment="Stretch" />
+            <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />
 
             <!--
                 Elements in a grid canvas are overlayed on top each other that is
                 why we specify grid here
             -->
-            <Grid Grid.Column="3">
+            <Grid Grid.Column="2">
                 <Image Source="{Binding ImagePath}"
                        Name="ImageDisplayControl"
                        d:DesignHeight="400"

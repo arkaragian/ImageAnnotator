@@ -1,5 +1,7 @@
 ﻿using ImageAnnotator.Model;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Controls;
@@ -55,12 +57,12 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// <summary>
     /// The image model that this view model deals with
     /// </summary>
-    public required AnnotatorModel ImageModel { get; init; }
+    public required AnnotatorModel Model { get; init; }
 
     /// <summary>
     /// The path of the image that the model holds
     /// </summary>
-    public string? ImagePath => ImageModel.ImagePath;
+    public string? ImagePath => Model.ImagePath;
 
     /// <summary>
     /// An ocasional status message to aid the user
@@ -80,7 +82,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// <summary>
     /// The path of the image that is displayed to the user
     /// </summary>
-    public string ImageDisplayPath => ImageModel.ImagePath ?? "No Image";
+    public string ImageDisplayPath => Model.ImagePath ?? "No Image";
 
     /// <summary>
     /// The cursor position
@@ -112,7 +114,14 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// <summary>
     /// Indicates if the view is correctly setup to insert a node
     /// </summary>
-    public bool CanInsertNode => CurrentInputState is InputState.Idle;
+    public bool CanInsertNode {
+        get {
+            if (Model.ImagePath is null) {
+                return false;
+            }
+            return CurrentInputState is InputState.Idle;
+        }
+    }
 
     /// <summary>
     /// Indicates if the view is waiting for any input input
@@ -124,33 +133,32 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// </summary>
     public bool IsWaitingForNodeInput => CurrentInsertionType is InsertionType.Node;
 
+    public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
+
     /// <summary>
     /// Loads an image to the model
     /// </summary>
     /// <param name="filename">The path to the file of the image</param>
     public Exception? LoadImage(string filename) {
         try {
-            ImageModel.Image = new Bitmap(filename);
+            Model.Image = new Bitmap(filename);
         } catch (Exception ex) {
-            ImageModel.Image = null;
+            Model.Image = null;
             return ex;
         }
 
-        ImageModel.ImagePath = filename;
-        ImageSize = ImageModel.Image.Size;
+        Model.ImagePath = filename;
+        ImageSize = Model.Image.Size;
         OnPropertyChanged(nameof(ImageSize));
         OnPropertyChanged(nameof(ImagePath));
         OnPropertyChanged(nameof(ImageDisplayPath));
 
-        // try {
-        //     DrawGrid(GridCanvas);
-        // } catch (Exception ex) {
-        //     return ex;
-        // }
-
         return null;
     }
 
+    /// <summary>
+    /// Draws a grid to the specified canvas.
+    /// </summary>
     public static void DrawGrid(Canvas? canvas) {
         if (canvas is null) {
             return;
@@ -216,7 +224,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             throw new InvalidOperationException("Zero canvas height!");
         }
 
-        foreach (IAnnotation a in ImageModel.Annotations) {
+        foreach (IAnnotation a in Model.Annotations) {
             _ = canvas.Children.Add(a.ToShape());
         }
     }
@@ -243,54 +251,20 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
 
-    /// <summary>
-    /// Performs an insertion action
-    /// </summary>
-    public void InsertionAction(InsertionType itype, System.Windows.Point? point) {
-        if (ImageModel.Image is null) {
-            StatusMessage = "No Image is Loaded";
-            OnPropertyChanged(nameof(StatusMessage));
-            return;
-        }
-
-        switch ((itype, CurrentInputState)) {
-            case (InsertionType.Node, InputState.Idle):
-                BeginNodeInsertion();
-                break;
-            case (InsertionType.Node, InputState.WaitingForInput):
-                if (point is null) {
-                    throw new InvalidOperationException("Cannot insert a node at a null point");
-                }
-                InsertNode(point.Value);
-                break;
-            case (InsertionType.Line, InputState.Idle):
-                break;
-            case (InsertionType.Line, InputState.WaitingForInput):
-                break;
-            case (InsertionType.Rectangle, InputState.Idle):
-                break;
-            case (InsertionType.Rectangle, InputState.WaitingForInput):
-                break;
-            default:
-                throw new InvalidOperationException("Condition not handled!");
-        }
-
-        DrawAnnotations(AnnotationCanvas);
-    }
-
     public void BeginNodeInsertion() {
         StatusMessage = "Click on Image to insert node";
         CurrentInputState = InputState.WaitingForInput;
         CurrentInsertionType = InsertionType.Node;
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
         return;
     }
 
     public void InsertNode(DoublePoint point) {
         StatusMessage = null;
 
-        ImageModel.InsertNode(point);
+        Model.InsertNode(point);
         CurrentInputState = InputState.Idle;
         CurrentInsertionType = null;
 
@@ -299,6 +273,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
         OnPropertyChanged(nameof(CurrentInsertionType));
+        OnPropertyChanged(nameof(Annotations));
         return;
     }
     //public bool Load(string filename) {

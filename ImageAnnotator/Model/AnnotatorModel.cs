@@ -37,11 +37,13 @@ public class AnnotatorModel {
 /// An interface for annotations
 /// </summary>
 public interface IAnnotation {
+    string Name { get; }
     Drawing ToDrawing();
     Shape ToShape();
 }
 
 public class LineAnnotation : IAnnotation {
+    public string Name { get; } = "Line";
     public Point StartPoint { get; set; }
     public Point EndPoint { get; set; }
     public Drawing ToDrawing() {
@@ -60,6 +62,7 @@ public class LineAnnotation : IAnnotation {
 }
 
 public class NodeAnnotation : IAnnotation {
+    public string Name { get; } = "Node";
     public DoublePoint Point { get; set; }
 
     public Drawing ToDrawing() {
@@ -91,6 +94,7 @@ public class NodeAnnotation : IAnnotation {
 }
 
 public class RectangleAnnotation : IAnnotation {
+    public string Name { get; } = "Rectangle";
     public Drawing ToDrawing() {
         throw new System.NotImplementedException();
     }

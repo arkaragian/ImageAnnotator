@@ -16,7 +16,7 @@ public partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
         ViewModel = new() {
-            ImageModel = new(),
+            Model = new(),
             AnnotationCanvas = AnnotationCanvas,
             GridCanvas = GridCanvas
         };
@@ -88,7 +88,7 @@ public partial class MainWindow : Window {
 
     private void ReDrawWindow(object sender, RoutedEventArgs e) {
         /// TODO: This is a viewmodel method implementation
-        if (ViewModel.ImageModel.Image is null) {
+        if (ViewModel.Model.Image is null) {
             return;
         }
         GridCanvas.Children.Clear();
