@@ -56,6 +56,21 @@ public partial class MainWindow : Window {
     }
 
     /// <summary>
+    /// Indicates if the node insertion command can be executed.
+    /// </summary>
+    private void InsertRectangleCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.CanInsertRectangle;
+    }
+
+    /// <summary>
+    /// Implements the logic of the command that is executed. At this point it set's up the application
+    /// to wait for a new node click.
+    /// </summary>
+    private void InsertRectangleCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+        ViewModel.BeginRectangleInsertion();
+    }
+
+    /// <summary>
     /// Loads an image in the ImageModel
     /// </summary>
     private void LoadImage(object sender, RoutedEventArgs e) {
@@ -101,6 +116,11 @@ public partial class MainWindow : Window {
 
         if (ViewModel.IsWaitingForLineInput) {
             ViewModel.InsertLine(p);
+            return;
+        }
+
+        if (ViewModel.IsWaitingForRectangleInput) {
+            ViewModel.InsertRectangle(p);
             return;
         }
     }

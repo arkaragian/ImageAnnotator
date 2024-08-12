@@ -14,10 +14,14 @@
         <CommandBinding Command="Open" Executed="LoadImage" />
         <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertLineCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertRectangleCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
             <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+            <KeyBinding Key="N"  Command="self:AnnotatorCommands.InsertNode"/>
+            <KeyBinding Key="L"  Command="self:AnnotatorCommands.InsertLine"/>
+            <KeyBinding Key="R"  Command="self:AnnotatorCommands.InsertRectangle"/>
     </Window.InputBindings>
 
    
@@ -40,7 +44,7 @@
                 <MenuItem Header="_Anotate">
                     <MenuItem Header="Insert _Node" Command="self:AnnotatorCommands.InsertNode"></MenuItem>
                     <MenuItem Header="Insert _Line" Command="self:AnnotatorCommands.InsertLine"> </MenuItem>
-                    <MenuItem Header="Insert _Rectangle"  Name="InsertRectangle"></MenuItem>
+                    <MenuItem Header="Insert _Rectangle"  Command="self:AnnotatorCommands.InsertRectangle"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -57,14 +61,15 @@
 
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Content="Annotations" Background="Gray" Height="Auto"/>
-                <ItemsControl Name="AnnotationList" ItemsSource="{Binding Annotations}">
+
+                <ListView Name="AnnotationList" ItemsSource="{Binding Annotations}">
                     <!-- The bindings in here assume the datacontext within as being each element -->
-                    <ItemsControl.ItemTemplate>
+                    <ListView.ItemTemplate>
                         <DataTemplate>
                             <Label Content="{Binding Name}"/>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackPanel>
 
             <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />

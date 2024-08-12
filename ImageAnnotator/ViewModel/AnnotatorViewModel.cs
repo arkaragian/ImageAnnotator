@@ -115,6 +115,18 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
     /// <summary>
+    /// Indicates if the view is correctly setup to insert a node
+    /// </summary>
+    public bool CanInsertRectangle {
+        get {
+            if (Model.ImagePath is null) {
+                return false;
+            }
+            return CurrentInputState is InputState.Idle;
+        }
+    }
+
+    /// <summary>
     /// Indicates if the view is waiting for any input input
     /// </summary>
     public bool IsWaitingForInput => CurrentInputState is InputState.WaitingForInput;
@@ -129,9 +141,15 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// </summary>
     public bool IsWaitingForLineInput => CurrentInsertionType is InsertionType.Line;
 
+    /// <summary>
+    /// Indicates if the view is waiting for a node input
+    /// </summary>
+    public bool IsWaitingForRectangleInput => CurrentInsertionType is InsertionType.Rectangle;
+
     public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
 
     private readonly LineBuilder _lineBuilder = new();
+    private readonly RectangleBuilder _rectangleBuilder = new();
 
     /// <summary>
     /// Loads an image to the model
@@ -285,6 +303,16 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
+    public void BeginRectangleInsertion() {
+        StatusMessage = "Click on the First Point";
+        CurrentInputState = InputState.WaitingForInput;
+        CurrentInsertionType = InsertionType.Rectangle;
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+        return;
+    }
+
     public void InsertLine(DoublePoint point) {
         //TODO: Implement two steps. One for first point and one for second point
         if (!_lineBuilder.HasStartPoint) {
@@ -313,6 +341,47 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         CurrentInputState = InputState.Idle;
         CurrentInsertionType = null;
         Model.Annotations.Add(la);
+
+        DrawAnnotations(AnnotationCanvas);
+
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+        OnPropertyChanged(nameof(Annotations));
+        return;
+    }
+
+    public void InsertRectangle(DoublePoint point) {
+        //TODO: Implement two steps. One for first point and one for second point
+        if (!_rectangleBuilder.HasAllRequiredPoints) {
+            _ = _rectangleBuilder.AddPoint(point);
+        }
+
+        if (!_rectangleBuilder.HasAllRequiredPoints) {
+            StatusMessage = "Enter Second Point";
+            OnPropertyChanged(nameof(StatusMessage));
+            return;
+        }
+
+
+
+        RectangleAnnotation? ra = _rectangleBuilder.Build();
+
+        if (ra is null) {
+            StatusMessage = "Could not build rectangle annotation!";
+            CurrentInputState = InputState.Idle;
+            CurrentInsertionType = null;
+            OnPropertyChanged(nameof(StatusMessage));
+            OnPropertyChanged(nameof(CurrentInputState));
+            OnPropertyChanged(nameof(CurrentInsertionType));
+            return;
+        }
+
+
+        StatusMessage = null;
+        CurrentInputState = InputState.Idle;
+        CurrentInsertionType = null;
+        Model.Annotations.Add(ra);
 
         DrawAnnotations(AnnotationCanvas);
 
