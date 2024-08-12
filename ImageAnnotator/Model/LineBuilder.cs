@@ -1,5 +1,8 @@
 namespace ImageAnnotator.Model;
 
+/// <summary>
+/// Builds a line
+/// </summary>
 public class LineBuilder {
     private DoublePoint? _startPoint;
     private DoublePoint? _endPoint;
@@ -27,8 +30,12 @@ public class LineBuilder {
         }
 
         LineAnnotation result = new() {
-            StartPoint = _startPoint.Value,
-            EndPoint = _endPoint.Value,
+            StartPoint = new NodeAnnotation() {
+                Point = _startPoint.Value,
+            },
+            EndPoint = new NodeAnnotation {
+                Point = _endPoint.Value,
+            }
         };
 
         _startPoint = null;

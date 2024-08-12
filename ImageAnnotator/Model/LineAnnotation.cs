@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -11,34 +12,33 @@ public class LineAnnotation : IAnnotation {
     public string Name { get; set; } = "Line";
     public required NodeAnnotation StartPoint { get; set; }
     public required NodeAnnotation EndPoint { get; set; }
-    public Drawing ToDrawing() {
-        Point sp = new() { X = StartPoint.X, Y = StartPoint.Y };
-        Point ep = new() { X = EndPoint.X, Y = EndPoint.Y };
-
+    public Geometry ToGeometry() {
         GeometryGroup gg = new();
-
-        return new GeometryDrawing() {
-            Brush = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-            Pen = new(Brushes.Black, 2.0),
-            Geometry = new LineGeometry(sp, ep)
+        LineGeometry lg = new() {
+            StartPoint = StartPoint.Point,
+            EndPoint = EndPoint.Point
         };
+        gg.Children.Add(StartPoint.ToGeometry());
+        gg.Children.Add(lg);
+        gg.Children.Add(EndPoint.ToGeometry());
+        return gg;
     }
 
 
 
     public Shape ToShape() {
-        //TODO: Figure out how to draw multiple shapes.
-        int Width = 10;
-        int Height = 10;
-        return new Ellipse() {
+        return new Path {
+            Data = ToGeometry(),
             Stroke = Brushes.Black,
-            Fill = Brushes.DarkBlue,
-            HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Center,
-            Width = Width,
-            Height = Height,
-            //TODO: Decide between start point and end point based on their relative coordinates
-            Margin = new Thickness(StartPoint.X - (Width / 2.0), StartPoint.Y - (Height / 2.0), 0, 0)
+            StrokeThickness = 4,
         };
+
+        // return new Line() {
+        //     X1 = StartPoint.Point.X,
+        //     X2 = EndPoint.Point.X,
+        //
+        //     Y1 = StartPoint.Point.Y,
+        //     Y2 = EndPoint.Point.Y,
+        // };
     }
 }

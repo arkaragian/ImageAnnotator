@@ -1,11 +1,10 @@
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace ImageAnnotator.Model;
 public class RectangleAnnotation : IAnnotation {
     public string Name { get; set; } = "Rectangle";
-    public Drawing ToDrawing() {
+    public Geometry ToGeometry() {
         throw new System.NotImplementedException();
     }
 

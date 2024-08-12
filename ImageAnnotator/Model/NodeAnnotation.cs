@@ -8,16 +8,11 @@ public class NodeAnnotation : IAnnotation {
     public string Name { get; set; } = "Node";
     public DoublePoint Point { get; set; }
 
-    public Drawing ToDrawing() {
-        EllipseGeometry eg = new() {
+    public Geometry ToGeometry() {
+        return new EllipseGeometry() {
             Center = Point,
             RadiusX = 5,
             RadiusY = 5,
-        };
-        return new GeometryDrawing() {
-            Brush = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-            Pen = new(Brushes.Black, 2.0),
-            Geometry = eg
         };
     }
 

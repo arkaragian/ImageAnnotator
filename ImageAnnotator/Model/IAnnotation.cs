@@ -12,7 +12,7 @@ public interface IAnnotation {
     /// </summary>
     string Name { get; set; }
 
-    Drawing ToDrawing();
+    Geometry ToGeometry();
 
     /// <summary>
     /// Converts the annotation to a drawable shape that can be placed on a

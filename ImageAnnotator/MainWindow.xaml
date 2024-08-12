@@ -91,7 +91,8 @@
             </Grid>
         </Grid>
 
-        <TextBlock Grid.Row="3" >
+        <TextBlock Name="CodeText" Grid.Row="2" FontSize="12">
+            This is code
         </TextBlock>
         
 
