@@ -52,7 +52,7 @@ public partial class MainWindow : Window {
     /// to wait for a new node click.
     /// </summary>
     private void InsertLineCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-        ViewModel.BeginNodeInsertion();
+        ViewModel.BeginLineInsertion();
     }
 
     /// <summary>
@@ -96,6 +96,12 @@ public partial class MainWindow : Window {
         Point p = e.GetPosition(AnnotationCanvas);
         if (ViewModel.IsWaitingForNodeInput) {
             ViewModel.InsertNode(p);
+            return;
+        }
+
+        if (ViewModel.IsWaitingForLineInput) {
+            ViewModel.InsertLine(p);
+            return;
         }
     }
 

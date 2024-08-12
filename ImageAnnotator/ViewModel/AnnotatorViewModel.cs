@@ -131,6 +131,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
 
+    private readonly LineBuilder _lineBuilder = new();
+
     /// <summary>
     /// Loads an image to the model
     /// </summary>
@@ -285,11 +287,32 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public void InsertLine(DoublePoint point) {
         //TODO: Implement two steps. One for first point and one for second point
-        StatusMessage = null;
+        if (!_lineBuilder.HasStartPoint) {
+            _ = _lineBuilder.WithStartPoint(point);
+            StatusMessage = "Enter Second Point";
+            OnPropertyChanged(nameof(StatusMessage));
+            return;
+        }
 
-        Model.InsertNode(point);
+        _ = _lineBuilder.WithEndPoint(point);
+
+        LineAnnotation? la = _lineBuilder.Build();
+
+        if (la is null) {
+            StatusMessage = "Could not build line annotation!";
+            CurrentInputState = InputState.Idle;
+            CurrentInsertionType = null;
+            OnPropertyChanged(nameof(StatusMessage));
+            OnPropertyChanged(nameof(CurrentInputState));
+            OnPropertyChanged(nameof(CurrentInsertionType));
+            return;
+        }
+
+
+        StatusMessage = null;
         CurrentInputState = InputState.Idle;
         CurrentInsertionType = null;
+        Model.Annotations.Add(la);
 
         DrawAnnotations(AnnotationCanvas);
 
