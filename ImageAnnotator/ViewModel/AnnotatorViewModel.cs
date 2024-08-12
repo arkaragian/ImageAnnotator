@@ -1,6 +1,5 @@
 ﻿using ImageAnnotator.Model;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
@@ -9,26 +8,6 @@ using System.Windows.Shapes;
 
 namespace ImageAnnotator.ViewModel;
 
-public struct DoublePoint {
-    public double X { get; set; }
-    public double Y { get; set; }
-
-
-    public static implicit operator DoublePoint(System.Windows.Point v) {
-        return new DoublePoint() {
-            X = v.X,
-            Y = v.Y
-        };
-    }
-
-
-    public static implicit operator System.Windows.Point(DoublePoint v) {
-        return new System.Windows.Point() {
-            X = v.X,
-            Y = v.Y
-        };
-    }
-}
 
 public enum InputState {
     /// <summary>
@@ -124,6 +103,18 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
     /// <summary>
+    /// Indicates if the view is correctly setup to insert a node
+    /// </summary>
+    public bool CanInsertLine {
+        get {
+            if (Model.ImagePath is null) {
+                return false;
+            }
+            return CurrentInputState is InputState.Idle;
+        }
+    }
+
+    /// <summary>
     /// Indicates if the view is waiting for any input input
     /// </summary>
     public bool IsWaitingForInput => CurrentInputState is InputState.WaitingForInput;
@@ -132,6 +123,11 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// Indicates if the view is waiting for a node input
     /// </summary>
     public bool IsWaitingForNodeInput => CurrentInsertionType is InsertionType.Node;
+
+    /// <summary>
+    /// Indicates if the view is waiting for a node input
+    /// </summary>
+    public bool IsWaitingForLineInput => CurrentInsertionType is InsertionType.Line;
 
     public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
 
@@ -276,6 +272,34 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         OnPropertyChanged(nameof(Annotations));
         return;
     }
+
+    public void BeginLineInsertion() {
+        StatusMessage = "Click on First Location";
+        CurrentInputState = InputState.WaitingForInput;
+        CurrentInsertionType = InsertionType.Line;
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+        return;
+    }
+
+    public void InsertLine(DoublePoint point) {
+        //TODO: Implement two steps. One for first point and one for second point
+        StatusMessage = null;
+
+        Model.InsertNode(point);
+        CurrentInputState = InputState.Idle;
+        CurrentInsertionType = null;
+
+        DrawAnnotations(AnnotationCanvas);
+
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+        OnPropertyChanged(nameof(Annotations));
+        return;
+    }
+
     //public bool Load(string filename) {
     //    try {
     //        return true;

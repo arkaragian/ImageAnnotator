@@ -32,12 +32,26 @@ public partial class MainWindow : Window {
         e.CanExecute = ViewModel.CanInsertNode;
     }
 
-
     /// <summary>
     /// Implements the logic of the command that is executed. At this point it set's up the application
     /// to wait for a new node click.
     /// </summary>
     private void InsertNodeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+        ViewModel.BeginNodeInsertion();
+    }
+
+    /// <summary>
+    /// Indicates if the node insertion command can be executed.
+    /// </summary>
+    private void InsertLineCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.CanInsertLine;
+    }
+
+    /// <summary>
+    /// Implements the logic of the command that is executed. At this point it set's up the application
+    /// to wait for a new node click.
+    /// </summary>
+    private void InsertLineCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
         ViewModel.BeginNodeInsertion();
     }
 

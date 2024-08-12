@@ -13,6 +13,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="LoadImage" />
         <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertLineCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -37,7 +38,7 @@
 
                 <MenuItem Header="_Anotate">
                     <MenuItem Header="Insert _Node" Command="self:AnnotatorCommands.InsertNode"></MenuItem>
-                    <MenuItem Header="Insert _Line"  Name="InsertLine"> </MenuItem>
+                    <MenuItem Header="Insert _Line" Command="self:AnnotatorCommands.InsertLine"> </MenuItem>
                     <MenuItem Header="Insert _Rectangle"  Name="InsertRectangle"></MenuItem>
                 </MenuItem>
             </Menu>
