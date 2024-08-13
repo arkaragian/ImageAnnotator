@@ -20,7 +20,7 @@ public class LineBuilder {
         return this;
     }
 
-    public LineAnnotation? Build() {
+    public LineAnnotation? Build(int? annotationCounter) {
         if (_startPoint is null) {
             return null;
         }
@@ -29,13 +29,21 @@ public class LineBuilder {
             return null;
         }
 
+        string a_name;
+        if (annotationCounter is null) {
+            a_name = "Line";
+        } else {
+            a_name = $"Line {annotationCounter}";
+        }
+
         LineAnnotation result = new() {
             StartPoint = new NodeAnnotation() {
                 Point = _startPoint.Value,
             },
             EndPoint = new NodeAnnotation {
                 Point = _endPoint.Value,
-            }
+            },
+            Name = a_name
         };
 
         _startPoint = null;

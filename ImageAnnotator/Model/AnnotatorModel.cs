@@ -11,6 +11,8 @@ public class AnnotatorModel {
     /// </summary>
     public string? ImagePath { get; set; }
 
+    public int AnnotationCounter { get; set; }
+
     /// <summary>
     /// The data of the image that is being annotated
     /// </summary>
@@ -26,9 +28,9 @@ public class AnnotatorModel {
     /// </summary>
     public void InsertNode(DoublePoint point) {
         NodeAnnotation na = new() {
-            Point = point
+            Point = point,
+            Name = $"Node {AnnotationCounter++}"
         };
         Annotations.Add(na);
     }
 }
-

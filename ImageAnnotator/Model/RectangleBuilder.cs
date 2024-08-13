@@ -22,7 +22,7 @@ public class RectangleBuilder {
     }
 
 
-    public RectangleAnnotation? Build() {
+    public RectangleAnnotation? Build(int? annotationCounter) {
         if (_pointA is null) {
             return null;
         }
@@ -75,6 +75,13 @@ public class RectangleBuilder {
             }
         }
 
+        string a_name;
+        if (annotationCounter is null) {
+            a_name = "Rect";
+        } else {
+            a_name = $"Rect {annotationCounter}";
+        }
+
 
         RectangleAnnotation result = new() {
             UpperLeftNode = new NodeAnnotation() {
@@ -82,7 +89,8 @@ public class RectangleBuilder {
             },
             LowerRightNode = new NodeAnnotation() {
                 Point = LowerRight
-            }
+            },
+            Name = a_name
         };
 
         _pointA = null;

@@ -88,6 +88,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// </summary>
     public Canvas? GridCanvas { get; set; }
 
+    public TextBlock? CodeArea { get; set; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
@@ -243,6 +245,17 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         foreach (IAnnotation a in Model.Annotations) {
             _ = canvas.Children.Add(a.ToShape());
         }
+
+        GenereateCode(CodeArea!);
+    }
+
+    public void GenereateCode(TextBlock block) {
+        Tikz.CodeGenerator cg = new() {
+            ImagePath = Model.ImagePath!
+        };
+
+        string code = cg.GenerateCode();
+        block.Text = code;
     }
 
     public void UpdateCursorPosition(Point p, Size controlSize) {
@@ -324,7 +337,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
         _ = _lineBuilder.WithEndPoint(point);
 
-        LineAnnotation? la = _lineBuilder.Build();
+        LineAnnotation? la = _lineBuilder.Build(Model.AnnotationCounter++);
 
         if (la is null) {
             StatusMessage = "Could not build line annotation!";
@@ -365,7 +378,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
 
 
-        RectangleAnnotation? ra = _rectangleBuilder.Build();
+        RectangleAnnotation? ra = _rectangleBuilder.Build(Model.AnnotationCounter++);
 
         if (ra is null) {
             StatusMessage = "Could not build rectangle annotation!";
