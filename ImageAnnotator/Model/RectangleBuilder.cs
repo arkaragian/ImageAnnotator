@@ -1,3 +1,5 @@
+using ImageAnnotator.Tikz;
+
 namespace ImageAnnotator.Model;
 
 /// <summary>
@@ -6,6 +8,7 @@ namespace ImageAnnotator.Model;
 public class RectangleBuilder {
     //The points bellow have no notion on which corner of the rectangle
     //they reside on. This is determined based on their coordinates.
+    public required DoubleSize DrawingRegion { get; set; }
 
     private DoublePoint? _pointA;
     private DoublePoint? _pointB;
@@ -85,10 +88,12 @@ public class RectangleBuilder {
 
         RectangleAnnotation result = new() {
             UpperLeftNode = new NodeAnnotation() {
-                Point = UpperLeft
+                NodeImageCoordinates = UpperLeft,
+                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(UpperLeft, DrawingRegion)
             },
             LowerRightNode = new NodeAnnotation() {
-                Point = LowerRight
+                NodeImageCoordinates = LowerRight,
+                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(LowerRight, DrawingRegion)
             },
             Name = a_name
         };

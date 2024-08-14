@@ -26,9 +26,10 @@ public class AnnotatorModel {
     /// <summary>
     /// Inserts a node to the list og annotations
     /// </summary>
-    public void InsertNode(DoublePoint point) {
+    public void InsertNode(DoublePoint imageCoordinates, DoublePoint normalizedCoordinates) {
         NodeAnnotation na = new() {
-            Point = point,
+            NodeImageCoordinates = imageCoordinates,
+            NormalizedCoordinates = normalizedCoordinates,
             Name = $"Node {AnnotationCounter++}"
         };
         Annotations.Add(na);

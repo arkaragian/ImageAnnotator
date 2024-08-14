@@ -1,9 +1,14 @@
+using ImageAnnotator.Tikz;
+
 namespace ImageAnnotator.Model;
 
 /// <summary>
 /// Builds a line
 /// </summary>
 public class LineBuilder {
+
+    public required DoubleSize DrawingRegion { get; set; }
+
     private DoublePoint? _startPoint;
     private DoublePoint? _endPoint;
 
@@ -38,10 +43,12 @@ public class LineBuilder {
 
         LineAnnotation result = new() {
             StartPoint = new NodeAnnotation() {
-                Point = _startPoint.Value,
+                NodeImageCoordinates = _startPoint.Value,
+                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(_startPoint.Value, DrawingRegion)
             },
             EndPoint = new NodeAnnotation {
-                Point = _endPoint.Value,
+                NodeImageCoordinates = _endPoint.Value,
+                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(_endPoint.Value, DrawingRegion)
             },
             Name = a_name
         };

@@ -7,9 +7,13 @@ public class RectangleAnnotation : IAnnotation {
     public required NodeAnnotation UpperLeftNode { get; set; }
     public required NodeAnnotation LowerRightNode { get; set; }
 
+    public string ToCode(uint? identation) {
+        return "";
+    }
+
     public Geometry ToGeometry() {
         return new RectangleGeometry() {
-            Rect = new System.Windows.Rect(UpperLeftNode.Point, LowerRightNode.Point)
+            Rect = new System.Windows.Rect(UpperLeftNode.NodeImageCoordinates, LowerRightNode.NodeImageCoordinates)
         };
     }
 

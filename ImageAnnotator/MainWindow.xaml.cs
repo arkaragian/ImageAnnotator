@@ -19,7 +19,7 @@ public partial class MainWindow : Window {
             Model = new(),
             AnnotationCanvas = AnnotationCanvas,
             GridCanvas = GridCanvas,
-            CodeArea = CodeText
+            CodeArea = CodeText,
         };
         Title = "Image Annotator";
         DataContext = ViewModel;

@@ -19,4 +19,6 @@ public interface IAnnotation {
     /// canvas
     /// </summary>
     Shape ToShape();
+
+    string ToCode(uint? identation);
 }

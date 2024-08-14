@@ -10,11 +10,16 @@ public class LineAnnotation : IAnnotation {
     public string Name { get; set; } = "Line";
     public required NodeAnnotation StartPoint { get; set; }
     public required NodeAnnotation EndPoint { get; set; }
+
+    public string ToCode(uint? identation) {
+        return "";
+    }
+
     public Geometry ToGeometry() {
         GeometryGroup gg = new();
         LineGeometry lg = new() {
-            StartPoint = StartPoint.Point,
-            EndPoint = EndPoint.Point
+            StartPoint = StartPoint.NodeImageCoordinates,
+            EndPoint = EndPoint.NodeImageCoordinates
         };
         gg.Children.Add(StartPoint.ToGeometry());
         gg.Children.Add(lg);

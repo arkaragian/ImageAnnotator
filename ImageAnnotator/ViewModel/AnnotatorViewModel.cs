@@ -1,4 +1,5 @@
 ﻿using ImageAnnotator.Model;
+using ImageAnnotator.Tikz;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -150,8 +151,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
 
-    private readonly LineBuilder _lineBuilder = new();
-    private readonly RectangleBuilder _rectangleBuilder = new();
+    private LineBuilder? _lineBuilder;
+    private RectangleBuilder? _rectangleBuilder;
 
     /// <summary>
     /// Loads an image to the model
@@ -251,25 +252,27 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public void GenereateCode(TextBlock block) {
         Tikz.CodeGenerator cg = new() {
-            ImagePath = Model.ImagePath!
+            ImagePath = Model.ImagePath!,
+            Annotations = Model.Annotations
         };
 
         string code = cg.GenerateCode();
         block.Text = code;
     }
 
-    public void UpdateCursorPosition(Point p, Size controlSize) {
-        CursorPosition = p;
-        //NormalizedCursorPosition = new DoublePoint() { X = (double)ImageSize.Width / (double)p.X, Y = (double)ImageSize.Height / (double)p.Y };
-        //
+    public static DoublePoint NormalizePoint(Point p, Size controlSize) {
         //The Zero of the image is the top left. For for tikz is the bottom left.
-        NormalizedCursorPosition = new DoublePoint() {
+        DoublePoint normalizedPoint = new() {
             X = (double)p.X / controlSize.Width,
             Y = ((double)p.Y / controlSize.Height * -1) + 1
         };
 
-        //To do the transformation we should assoumte a vector on the Normalti
-        //
+        return normalizedPoint;
+    }
+
+    public void UpdateCursorPosition(Point p, Size controlSize) {
+        CursorPosition = p;
+        NormalizedCursorPosition = NormalizePoint(p, controlSize);
 
         OnPropertyChanged(nameof(CursorPosition));
         OnPropertyChanged(nameof(NormalizedCursorPosition));
@@ -290,10 +293,18 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    public void InsertNode(DoublePoint point) {
+    public void InsertNode(DoublePoint imagePoint) {
         StatusMessage = null;
 
-        Model.InsertNode(point);
+
+        DoubleSize s = new() {
+            Width = AnnotationCanvas!.Width,
+            Height = AnnotationCanvas!.Height
+        };
+
+        DoublePoint normalizedPoint = TransformCoordinates.ToTikzCoordinates(imagePoint, s);
+
+        Model.InsertNode(imagePoint, normalizedPoint);
         CurrentInputState = InputState.Idle;
         CurrentInsertionType = null;
 
@@ -328,6 +339,14 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public void InsertLine(DoublePoint point) {
         //TODO: Implement two steps. One for first point and one for second point
+        //
+        _lineBuilder ??= new LineBuilder() {
+            DrawingRegion = new DoubleSize() {
+                Width = AnnotationCanvas!.Width,
+                Height = AnnotationCanvas.Height,
+            }
+        };
+
         if (!_lineBuilder.HasStartPoint) {
             _ = _lineBuilder.WithStartPoint(point);
             StatusMessage = "Enter Second Point";
@@ -366,6 +385,14 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public void InsertRectangle(DoublePoint point) {
         //TODO: Implement two steps. One for first point and one for second point
+
+        _rectangleBuilder ??= new RectangleBuilder() {
+            DrawingRegion = new DoubleSize() {
+                Width = AnnotationCanvas!.Width,
+                Height = AnnotationCanvas.Height,
+            }
+        };
+
         if (!_rectangleBuilder.HasAllRequiredPoints) {
             _ = _rectangleBuilder.AddPoint(point);
         }
