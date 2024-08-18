@@ -8,10 +8,19 @@ namespace ImageAnnotator.Model;
 /// </summary>
 public interface IAnnotation {
     /// <summary>
-    /// The name of the annotation
+    /// The name of the annotation. That is the name that is used by the application.
     /// </summary>
     string Name { get; set; }
 
+    /// <summary>
+    /// Recalculates the coordinates based on a new control size.
+    /// </summary>
+    void ResizeCoordinates(DoubleSize newSize);
+
+    /// <summary>
+    /// Converts the annotation to a geometry that can be used for rendering
+    /// the data on screen.
+    /// </summary>
     Geometry ToGeometry();
 
     /// <summary>
@@ -20,5 +29,12 @@ public interface IAnnotation {
     /// </summary>
     Shape ToShape();
 
+    /// <summary>
+    /// Converts the annotation to tikz code.
+    /// </summary>
+    /// <param name="identation">
+    /// Represents the itendation that may preceede the code in terms of
+    /// number of spaces.
+    /// </param>
     string ToCode(uint? identation);
 }

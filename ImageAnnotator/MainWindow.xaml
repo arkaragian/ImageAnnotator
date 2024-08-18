@@ -92,13 +92,12 @@
                         Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
                         Name="AnnotationCanvas"
                         MouseMove="Image_MouseMove"
-                        MouseDown="AnnotationCanvasClick"/>
+                        MouseDown="AnnotationCanvasClick"
+                        SizeChanged="AnnotationCanvasResized"/>
             </Grid>
         </Grid>
 
-        <TextBlock Name="CodeText" Grid.Row="2" FontSize="12">
-            This is code
-        </TextBlock>
+        <TextBox Name="CodeText" Grid.Row="2" FontSize="12" IsReadOnly="True"/>
         
 
         <StatusBar Grid.Row="3" >

@@ -15,7 +15,7 @@ public class CoordinatesTransformer {
     /// <summary>
     /// The point that is affected by the transformations.
     /// </summary>
-    public required MathPoint Point { get; set; }
+    public MathPoint? Point { get; set; }
 
     /// <summary>
     /// Translates a vector to the new coordinate system. This function assumes
@@ -23,6 +23,11 @@ public class CoordinatesTransformer {
     /// </summary>
     public CoordinatesTransformer TranslatePoint() {
         if (SecondarySystem is null) {
+            return this;
+        }
+
+
+        if (Point is null) {
             return this;
         }
         if (Point.Dimension != SecondarySystem.Dimension) {
@@ -103,6 +108,10 @@ public class CoordinatesTransformer {
     /// representation.
     /// </summary>
     public CoordinatesTransformer RotatePointByAngle(double angle) {
+
+        if (Point is null) {
+            return this;
+        }
         Matrix m = GetRotationMatrixByDegree(angle) * Point.ToMatrix();
 
         m.Print();

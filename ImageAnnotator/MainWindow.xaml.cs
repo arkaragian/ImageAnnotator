@@ -126,6 +126,15 @@ public partial class MainWindow : Window {
         }
     }
 
+    /// <summary>
+    /// Handles any resize of the annotation canvas
+    /// </summary>
+    private void AnnotationCanvasResized(object sender, SizeChangedEventArgs e) {
+        //Since all annotations that are painted are UI elements and in order for the
+        //elemeents to be moved again it is wise to recalculate their coordinates.
+        ViewModel.UpdateCoordinates(e.NewSize.Width, e.NewSize.Height);
+    }
+
 
     private void ReDrawWindow(object sender, RoutedEventArgs e) {
         /// TODO: This is a viewmodel method implementation
@@ -171,5 +180,4 @@ public partial class MainWindow : Window {
 
         ViewModel.UpdateCursorPosition(np, s);
     }
-
-}
+} //End of class

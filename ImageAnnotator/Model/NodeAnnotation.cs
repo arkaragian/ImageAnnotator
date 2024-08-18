@@ -23,6 +23,17 @@ public class NodeAnnotation : IAnnotation {
 
     public required DoublePoint NormalizedCoordinates { get; set; }
 
+    public void ResizeCoordinates(DoubleSize newSize) {
+        //Since we have normalized coordinates we can use those and the new
+        //size to deduce the non-normalized coordinates. But the normalized
+        //coordinates
+        DoublePoint local_wpf_normalized = Tikz.TransformCoordinates.ToWPFCoordinates(NormalizedCoordinates);
+        NodeImageCoordinates = new DoublePoint() {
+            X = local_wpf_normalized.X * newSize.Width,
+            Y = local_wpf_normalized.X * newSize.Height,
+        };
+    }
+
     public string ToCode(uint? identation) {
         StringBuilder builder = new();
         if (identation is not null) {

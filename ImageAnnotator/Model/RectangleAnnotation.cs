@@ -7,6 +7,11 @@ public class RectangleAnnotation : IAnnotation {
     public required NodeAnnotation UpperLeftNode { get; set; }
     public required NodeAnnotation LowerRightNode { get; set; }
 
+    public void ResizeCoordinates(DoubleSize newSize) {
+        UpperLeftNode.ResizeCoordinates(newSize);
+        LowerRightNode.ResizeCoordinates(newSize);
+    }
+
     public string ToCode(uint? identation) {
         return "";
     }

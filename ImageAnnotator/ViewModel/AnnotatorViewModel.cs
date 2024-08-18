@@ -89,7 +89,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// </summary>
     public Canvas? GridCanvas { get; set; }
 
-    public TextBlock? CodeArea { get; set; }
+    public TextBox? CodeArea { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -168,6 +168,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
         Model.ImagePath = filename;
         ImageSize = Model.Image.Size;
+        if (CodeArea is not null) {
+            GenereateCode(CodeArea);
+        }
         OnPropertyChanged(nameof(ImageSize));
         OnPropertyChanged(nameof(ImagePath));
         OnPropertyChanged(nameof(ImageDisplayPath));
@@ -230,6 +233,24 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         }
     }
 
+    /// <summary>
+    /// Updates the annotation with new coordinates based on the new control width and height
+    /// </summary>
+    /// <remarks>
+    ///     The width and height are given independendtly to avoid bringing custom dependencies
+    ///     at the wpf level.
+    /// </remarks>
+    public void UpdateCoordinates(double newControlWidth, double newControlHeight) {
+        DoubleSize s = new() {
+            Width = newControlWidth,
+            Height = newControlHeight,
+        };
+
+        Model.ResizeAnnotationCoordinates(s);
+
+        DrawAnnotations(AnnotationCanvas);
+    }
+
     public void DrawAnnotations(Canvas? canvas) {
         if (canvas is null) {
             return;
@@ -243,6 +264,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             throw new InvalidOperationException("Zero canvas height!");
         }
 
+        canvas.Children.Clear();
+
         foreach (IAnnotation a in Model.Annotations) {
             _ = canvas.Children.Add(a.ToShape());
         }
@@ -250,8 +273,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         GenereateCode(CodeArea!);
     }
 
-    public void GenereateCode(TextBlock block) {
-        Tikz.CodeGenerator cg = new() {
+    public void GenereateCode(TextBox block) {
+        CodeGenerator cg = new() {
             ImagePath = Model.ImagePath!,
             Annotations = Model.Annotations
         };

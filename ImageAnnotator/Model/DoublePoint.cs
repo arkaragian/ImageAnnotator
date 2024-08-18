@@ -1,8 +1,13 @@
 namespace ImageAnnotator.Model;
 
+
+/// <summary>
+/// A simple struct to represent a point with double prescision in order
+/// to not mess with windows point and drawing points etc.
+/// </summary>
 public struct DoublePoint {
-    public double X { get; set; }
-    public double Y { get; set; }
+    public required double X { get; set; }
+    public required double Y { get; set; }
 
 
     public static implicit operator DoublePoint(System.Windows.Point v) {
