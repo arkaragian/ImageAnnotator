@@ -6,6 +6,11 @@ namespace libGeometry;
 /// </summary>
 public class MathPoint {
     /// <summary>
+    /// The name of coordinate system where the point bellongs to.
+    /// </summary>
+    public string? CoordinateSystemName { get; set; }
+
+    /// <summary>
     /// The set of numbers that define the coordinates of a point.
     /// </summary>
     public required double[] Coordinates { get; set; }

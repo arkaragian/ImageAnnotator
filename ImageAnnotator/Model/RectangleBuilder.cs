@@ -1,4 +1,5 @@
 using ImageAnnotator.Tikz;
+using libGeometry;
 
 namespace ImageAnnotator.Model;
 
@@ -10,12 +11,14 @@ public class RectangleBuilder {
     //they reside on. This is determined based on their coordinates.
     public required DoubleSize DrawingRegion { get; set; }
 
-    private DoublePoint? _pointA;
-    private DoublePoint? _pointB;
+    //public required CoordinatesTransformer CoordinateTransformer { get; set; }
+
+    private MathPoint? _pointA;
+    private MathPoint? _pointB;
 
     public bool HasAllRequiredPoints => _pointA is not null && _pointB is not null;
 
-    public RectangleBuilder AddPoint(DoublePoint point) {
+    public RectangleBuilder AddPoint(MathPoint point) {
         if (_pointA is null) {
             _pointA = point;
         } else {
@@ -34,46 +37,54 @@ public class RectangleBuilder {
             return null;
         }
 
-        DoublePoint UpperLeft;
+        MathPoint UpperLeft;
         //Determine Upper Left Point
-        if (_pointA.Value.X < _pointB.Value.X) {
-            if (_pointA.Value.Y < _pointB.Value.Y) {
-                UpperLeft = _pointA.Value;
+        if (_pointA[0] < _pointB[0]) {
+            if (_pointA[1] < _pointB[1]) {
+                UpperLeft = _pointA;
             } else {
-                UpperLeft = new DoublePoint() {
-                    X = _pointA.Value.X,
-                    Y = _pointB.Value.Y
+                UpperLeft = new MathPoint() {
+                    Coordinates = new double[] {
+                        _pointA[0],
+                        _pointA[1]
+                    }
                 };
             }
         } else {
-            if (_pointB.Value.Y < _pointA.Value.Y) {
-                UpperLeft = _pointB.Value;
+            if (_pointB[1] < _pointA[1]) {
+                UpperLeft = _pointB;
             } else {
-                UpperLeft = new DoublePoint() {
-                    X = _pointB.Value.X,
-                    Y = _pointA.Value.Y
+                UpperLeft = new MathPoint() {
+                    Coordinates = new double[] {
+                        _pointB[0],
+                        _pointA[1]
+                    }
                 };
             }
         }
 
-        DoublePoint LowerRight;
+        MathPoint LowerRight;
 
-        if (_pointA.Value.Y > _pointB.Value.Y) {
-            if (_pointA.Value.X > _pointB.Value.X) {
-                LowerRight = _pointA.Value;
+        if (_pointA[1] > _pointB[1]) {
+            if (_pointA[0] > _pointB[0]) {
+                LowerRight = _pointA;
             } else {
-                LowerRight = new DoublePoint() {
-                    X = _pointB.Value.X,
-                    Y = _pointA.Value.Y
+                LowerRight = new MathPoint() {
+                    Coordinates = new double[] {
+                        _pointB[0],
+                        _pointA[1]
+                    }
                 };
             }
         } else {
-            if (_pointB.Value.X > _pointA.Value.X) {
-                LowerRight = _pointB.Value;
+            if (_pointB[0] > _pointA[0]) {
+                LowerRight = _pointB;
             } else {
-                LowerRight = new DoublePoint() {
-                    X = _pointA.Value.X,
-                    Y = _pointB.Value.Y
+                LowerRight = new MathPoint() {
+                    Coordinates = new double[] {
+                        _pointA[0],
+                        _pointB[1]
+                    }
                 };
             }
         }
@@ -89,6 +100,7 @@ public class RectangleBuilder {
         RectangleAnnotation result = new() {
             UpperLeftNode = new NodeAnnotation() {
                 NodeImageCoordinates = UpperLeft,
+                //NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(UpperLeft, DrawingRegion)
                 NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(UpperLeft, DrawingRegion)
             },
             LowerRightNode = new NodeAnnotation() {

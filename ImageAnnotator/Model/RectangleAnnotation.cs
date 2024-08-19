@@ -17,8 +17,17 @@ public class RectangleAnnotation : IAnnotation {
     }
 
     public Geometry ToGeometry() {
+        System.Windows.Point ul = new() {
+            X = UpperLeftNode.NodeImageCoordinates[0],
+            Y = UpperLeftNode.NodeImageCoordinates[1],
+        };
+
+        System.Windows.Point lr = new() {
+            X = LowerRightNode.NodeImageCoordinates[0],
+            Y = LowerRightNode.NodeImageCoordinates[1],
+        };
         return new RectangleGeometry() {
-            Rect = new System.Windows.Rect(UpperLeftNode.NodeImageCoordinates, LowerRightNode.NodeImageCoordinates)
+            Rect = new System.Windows.Rect(ul, lr)
         };
     }
 

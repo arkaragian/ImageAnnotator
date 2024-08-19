@@ -1,4 +1,5 @@
 using ImageAnnotator.Model;
+using libGeometry;
 
 namespace ImageAnnotator.Tikz;
 
@@ -6,11 +7,13 @@ public static class TransformCoordinates {
     /// <summary>
     /// Normalizes the values of the point to the values of the containing control.
     /// </summary>
-    public static DoublePoint ToTikzCoordinates(DoublePoint point, DoubleSize controlSize) {
+    public static MathPoint ToTikzCoordinates(MathPoint point, DoubleSize controlSize) {
         //The Zero of the image is the top left. For for tikz is the bottom left.
-        DoublePoint normalizedPoint = new() {
-            X = point.X / controlSize.Width,
-            Y = (point.Y / controlSize.Height * -1) + 1
+        MathPoint normalizedPoint = new() {
+            Coordinates = new double[] {
+                point[0] / controlSize.Width,
+                (point[1] / controlSize.Height * -1) + 1
+            }
         };
 
         return normalizedPoint;

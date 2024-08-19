@@ -28,7 +28,7 @@ public class AnnotatorModel {
     /// </summary>
     public List<IAnnotation> Annotations { get; private set; } = new();
 
-    private CoordinatesTransformer _transformer;
+    private readonly CoordinatesTransformer _transformer;
 
     public AnnotatorModel() {
         _transformer = new() {
@@ -45,6 +45,7 @@ public class AnnotatorModel {
                     }
                 }
             },
+            //The tikz coordinate system
             SecondarySystem = new() {
                 DirectionVectors = new Vector[] {
                     //X direction
@@ -56,6 +57,8 @@ public class AnnotatorModel {
                         Coordinates = new double[] {0.0, -1.0}
                     }
                 },
+                //Location of the tikz system defined in terms of root system
+                //coordinates
                 Location = new() {
                     Coordinates = new double[] { 0.0, 1.0 }
                 }
@@ -66,7 +69,7 @@ public class AnnotatorModel {
     /// <summary>
     /// Inserts a node to the list og annotations
     /// </summary>
-    public void InsertNode(DoublePoint imageCoordinates, DoublePoint normalizedCoordinates) {
+    public void InsertNode(MathPoint imageCoordinates, MathPoint normalizedCoordinates) {
         NodeAnnotation na = new() {
             NodeImageCoordinates = imageCoordinates,
             NormalizedCoordinates = normalizedCoordinates,
