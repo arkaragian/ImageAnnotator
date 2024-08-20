@@ -1,4 +1,5 @@
 ﻿using ImageAnnotator.ViewModel;
+using libGeometry;
 using Microsoft.Win32;
 using System;
 using System.Windows;
@@ -110,18 +111,24 @@ public partial class MainWindow : Window {
         }
 
         Point p = e.GetPosition(AnnotationCanvas);
+        MathPoint mp = new() {
+            Coordinates = new double[] {
+                p.X,
+                p.Y
+            }
+        };
         if (ViewModel.IsWaitingForNodeInput) {
-            ViewModel.InsertNode(p);
+            ViewModel.InsertNode(mp);
             return;
         }
 
         if (ViewModel.IsWaitingForLineInput) {
-            ViewModel.InsertLine(p);
+            ViewModel.InsertLine(mp);
             return;
         }
 
         if (ViewModel.IsWaitingForRectangleInput) {
-            ViewModel.InsertRectangle(p);
+            ViewModel.InsertRectangle(mp);
             return;
         }
     }

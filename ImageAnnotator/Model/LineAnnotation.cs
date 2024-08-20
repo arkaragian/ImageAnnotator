@@ -24,8 +24,14 @@ public class LineAnnotation : IAnnotation {
     public Geometry ToGeometry() {
         GeometryGroup gg = new();
         LineGeometry lg = new() {
-            StartPoint = StartPoint.NodeImageCoordinates,
-            EndPoint = EndPoint.NodeImageCoordinates
+            StartPoint = new() {
+                X = StartPoint.NodeImagePoint[0],
+                Y = StartPoint.NodeImagePoint[1],
+            },
+            EndPoint = new() {
+                X = EndPoint.NodeImagePoint[0],
+                Y = EndPoint.NodeImagePoint[1],
+            }
         };
         gg.Children.Add(StartPoint.ToGeometry());
         gg.Children.Add(lg);

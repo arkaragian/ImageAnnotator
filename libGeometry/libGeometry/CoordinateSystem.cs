@@ -1,5 +1,8 @@
 namespace libGeometry;
 
+/// <summary>
+/// A class that represents a coordinate system
+/// </summary>
 public class CoordinateSystem {
     /// <summary>
     /// The direction vectors
@@ -12,20 +15,10 @@ public class CoordinateSystem {
     /// </summary>
     public MathPoint? Location { get; set; }
 
-    public int Dimension => DirectionVectors.Length;
-
     /// <summary>
-    /// Basic constructor that may accept any number of arguments.
+    /// The dimensions of the coordinate systems
     /// </summary>
-    /// <param name="directions">The coordinates that
-    // public CoordinateSystem(params Vector[] directions) {
-    //     if (directions is null || directions.Length is 0) {
-    //         throw new ArgumentException("A coordinate system must have at least one dimension.");
-    //     }
-    //
-    //     directionVectors = new Vector[directions.Length];
-    //     Array.Copy(directions, directionVectors, directions.Length);
-    // }
+    public int Dimension => DirectionVectors.Length;
 
     /// <summary>
     /// The [ ] operator for setting and getting the values.:w

@@ -67,12 +67,15 @@ public class AnnotatorModel {
     }
 
     /// <summary>
-    /// Inserts a node to the list og annotations
+    /// Inserts a node to the list of annotations
     /// </summary>
+    /// <param name="imageCoordinates">A point that represernts the coordinates of an image</param>
     public void InsertNode(MathPoint imageCoordinates, MathPoint normalizedCoordinates) {
+
         NodeAnnotation na = new() {
-            NodeImageCoordinates = imageCoordinates,
-            NormalizedCoordinates = normalizedCoordinates,
+            NodeImagePoint = imageCoordinates,
+            NodeImageNormalizedPoint = normalizedCoordinates,
+            NodeTikzPoint = _transformer.TransformToSecondarySystem(normalizedCoordinates),
             Name = $"Node {AnnotationCounter++}"
         };
         Annotations.Add(na);

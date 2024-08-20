@@ -46,6 +46,9 @@ public class MathPoint {
         };
     }
 
+    /// <summary>
+    /// Returns a new point with coordinates subtracted.
+    /// </summary>
     public MathPoint Subtract(MathPoint other) {
         if (Dimension != other.Dimension) {
             throw new ArgumentException("Vectors must have the same dimensions to be added.");

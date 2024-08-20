@@ -18,13 +18,13 @@ public class RectangleAnnotation : IAnnotation {
 
     public Geometry ToGeometry() {
         System.Windows.Point ul = new() {
-            X = UpperLeftNode.NodeImageCoordinates[0],
-            Y = UpperLeftNode.NodeImageCoordinates[1],
+            X = UpperLeftNode.NodeImagePoint[0],
+            Y = UpperLeftNode.NodeImagePoint[1],
         };
 
         System.Windows.Point lr = new() {
-            X = LowerRightNode.NodeImageCoordinates[0],
-            Y = LowerRightNode.NodeImageCoordinates[1],
+            X = LowerRightNode.NodeImagePoint[0],
+            Y = LowerRightNode.NodeImagePoint[1],
         };
         return new RectangleGeometry() {
             Rect = new System.Windows.Rect(ul, lr)

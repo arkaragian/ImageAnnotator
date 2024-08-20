@@ -20,24 +20,28 @@ public class NodeAnnotation : IAnnotation {
     /// <summary>
     /// The location on the image that the node is placed on
     /// </summary>
-    public required MathPoint NodeImageCoordinates { get; set; }
+    public required MathPoint NodeImagePoint { get; set; }
 
-    public required MathPoint NormalizedCoordinates { get; set; }
+    /// <summary>
+    /// The normalized image coordinates
+    /// </summary>
+    public required MathPoint NodeImageNormalizedPoint { get; set; }
+
+    /// <summary>
+    /// The tikz coordinates
+    /// </summary>
+    public required MathPoint NodeTikzPoint { get; set; }
 
     public void ResizeCoordinates(DoubleSize newSize) {
         //Since we have normalized coordinates we can use those and the new
         //size to deduce the non-normalized coordinates. But the normalized
         //coordinates
         //DoublePoint local_wpf_normalized = Tikz.TransformCoordinates.ToWPFCoordinates(NormalizedCoordinates);
-        MathPoint local_wpf_normalized = new() {
-            Coordinates = new double[] { 0.0, 0.0 }
-        };
 
-        double x = local_wpf_normalized[0] * newSize.Width;
-        double y = local_wpf_normalized[1] * newSize.Height;
-        NodeImageCoordinates = new MathPoint() {
-            Coordinates = new double[] { x, y }
-        };
+        double x = NodeImageNormalizedPoint[0] * newSize.Width;
+        double y = NodeImageNormalizedPoint[1] * newSize.Height;
+        NodeImagePoint[0] = x;
+        NodeImagePoint[1] = y;
     }
 
     public string ToCode(uint? identation) {
@@ -50,7 +54,7 @@ public class NodeAnnotation : IAnnotation {
 
         string no_spaces_name = Name.Replace(" ", "");
 
-        string s = $$"""\node[anchor=south west,inner sep=0] ({{no_spaces_name}}) at ( {{NormalizedCoordinates[0].ToString("F3")}}, {{NormalizedCoordinates[1].ToString("F3")}} ) { {{Text}} };""";
+        string s = $$"""\node[anchor=south west,inner sep=0] ({{no_spaces_name}}) at ( {{NodeTikzPoint[0].ToString("F3")}}, {{NodeTikzPoint[1].ToString("F3")}} ) { {{Text}} };""";
 
         _ = builder.Append(s);
         return builder.ToString();
@@ -59,8 +63,8 @@ public class NodeAnnotation : IAnnotation {
     public Geometry ToGeometry() {
         return new EllipseGeometry() {
             Center = new Point() {
-                X = NodeImageCoordinates[0],
-                Y = NodeImageCoordinates[1]
+                X = NodeImagePoint[0],
+                Y = NodeImagePoint[1]
             },
             RadiusX = 5,
             RadiusY = 5,
@@ -77,7 +81,7 @@ public class NodeAnnotation : IAnnotation {
             VerticalAlignment = VerticalAlignment.Center,
             Width = Width,
             Height = Height,
-            Margin = new Thickness(NodeImageCoordinates.X - (Width / 2.0), NodeImageCoordinates.Y - (Height / 2.0), 0, 0)
+            Margin = new Thickness(NodeImagePoint[0] - (Width / 2.0), NodeImagePoint[1] - (Height / 2.0), 0, 0)
         };
     }
 }

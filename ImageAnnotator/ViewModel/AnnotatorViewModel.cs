@@ -1,5 +1,6 @@
 ﻿using ImageAnnotator.Model;
 using ImageAnnotator.Tikz;
+using libGeometry;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -316,7 +317,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    public void InsertNode(DoublePoint imagePoint) {
+    public void InsertNode(MathPoint imagePoint) {
         StatusMessage = null;
 
 
@@ -325,7 +326,14 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             Height = AnnotationCanvas!.Height
         };
 
-        DoublePoint normalizedPoint = TransformCoordinates.ToTikzCoordinates(imagePoint, s);
+        //TODO: Handle the coordinate transformation
+        MathPoint normalizedPoint = new() {
+            Coordinates = new double[] {
+                imagePoint[0]/s.Width,
+                imagePoint[1]/s.Height,
+            }
+        };
+        //DoublePoint normalizedPoint = TransformCoordinates.ToTikzCoordinates(imagePoint, s);
 
         Model.InsertNode(imagePoint, normalizedPoint);
         CurrentInputState = InputState.Idle;
@@ -360,13 +368,46 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    public void InsertLine(DoublePoint point) {
+    public void InsertLine(MathPoint point) {
         //TODO: Implement two steps. One for first point and one for second point
         //
         _lineBuilder ??= new LineBuilder() {
             DrawingRegion = new DoubleSize() {
                 Width = AnnotationCanvas!.Width,
                 Height = AnnotationCanvas.Height,
+            },
+            Transformer = new() {
+                //The root system is the WPF coordinate system
+                RootSystem = new() {
+                    DirectionVectors = new Vector[] {
+                    //X direction
+                    new() {
+                        Coordinates = new double[] {1.0, 0.0}
+                    },
+                    //Y direction
+                    new() {
+                        Coordinates = new double[] {0.0, -1.0}
+                    }
+                }
+                },
+                //The tikz coordinate system
+                SecondarySystem = new() {
+                    DirectionVectors = new Vector[] {
+                    //X direction
+                    new() {
+                        Coordinates = new double[] {1.0, 0.0}
+                    },
+                    //Y direction
+                    new() {
+                        Coordinates = new double[] {0.0, 1.0}
+                    }
+                },
+                    //Location of the tikz system defined in terms of root system
+                    //coordinates
+                    Location = new() {
+                        Coordinates = new double[] { 0.0, 1.0 }
+                    }
+                }
             }
         };
 
@@ -406,13 +447,46 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    public void InsertRectangle(DoublePoint point) {
+    public void InsertRectangle(MathPoint point) {
         //TODO: Implement two steps. One for first point and one for second point
 
         _rectangleBuilder ??= new RectangleBuilder() {
             DrawingRegion = new DoubleSize() {
                 Width = AnnotationCanvas!.Width,
                 Height = AnnotationCanvas.Height,
+            },
+            Transformer = new() {
+                //The root system is the WPF coordinate system
+                RootSystem = new() {
+                    DirectionVectors = new Vector[] {
+                    //X direction
+                    new() {
+                        Coordinates = new double[] {1.0, 0.0}
+                    },
+                    //Y direction
+                    new() {
+                        Coordinates = new double[] {0.0, -1.0}
+                    }
+                }
+                },
+                //The tikz coordinate system
+                SecondarySystem = new() {
+                    DirectionVectors = new Vector[] {
+                    //X direction
+                    new() {
+                        Coordinates = new double[] {1.0, 0.0}
+                    },
+                    //Y direction
+                    new() {
+                        Coordinates = new double[] {0.0, 1.0}
+                    }
+                },
+                    //Location of the tikz system defined in terms of root system
+                    //coordinates
+                    Location = new() {
+                        Coordinates = new double[] { 0.0, 1.0 }
+                    }
+                }
             }
         };
 

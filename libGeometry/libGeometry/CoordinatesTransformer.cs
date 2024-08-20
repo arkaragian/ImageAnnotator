@@ -1,5 +1,8 @@
 namespace libGeometry;
 
+/// <summary>
+/// A class that manages transformation between two coordinate systems
+/// </summary>
 public class CoordinatesTransformer {
     /// <summary>
     /// The coordinate system based on which all other coordinate systems
@@ -10,38 +13,20 @@ public class CoordinatesTransformer {
     /// <summary>
     /// A second coordinate system that is different than the root system.
     /// </summary>
-    public CoordinateSystem? SecondarySystem { get; set; }
+    public required CoordinateSystem SecondarySystem { get; set; }
 
     /// <summary>
-    /// The point that is affected by the transformations.
+    /// Recalculates the input point coordinates based on the location of the
+    /// secondary system
     /// </summary>
-    public MathPoint? Point { get; set; }
-
-    /// <summary>
-    /// Translates a vector to the new coordinate system. This function assumes
-    /// that the vector
-    /// </summary>
-    public CoordinatesTransformer TranslatePoint() {
-        if (SecondarySystem is null) {
-            return this;
-        }
-
-
-        if (Point is null) {
-            return this;
-        }
-        if (Point.Dimension != SecondarySystem.Dimension) {
-            throw new InvalidOperationException("The vector dimensions should be equal to the target system dimesions");
-        }
+    private MathPoint TranslatePoint(MathPoint point) {
 
         if (SecondarySystem.Location is null) {
             throw new InvalidOperationException("Target system should have defined");
         }
 
 
-        Point = Point.Subtract(SecondarySystem.Location);
-
-        return this;
+        return point.Subtract(SecondarySystem.Location);
 
         //To translate we just use the location of the new coordinate system and
         //add it's components to the input point.
@@ -58,10 +43,10 @@ public class CoordinatesTransformer {
         //Matrix translation_matrix = new(input.Dimension + 1, 1);
     }
 
-    private static Matrix GetRotationMatrixByDegree(double degangle) {
-        double angle = degangle * Math.PI / 180;
-        return GetRotationMatrixByRadian(angle);
-    }
+    // private static Matrix GetRotationMatrixByDegree(double degangle) {
+    //     double angle = degangle * Math.PI / 180;
+    //     return GetRotationMatrixByRadian(angle);
+    // }
 
     private static Matrix GetRotationMatrixByRadian(double angle) {
         //Assumes that clockwise is the positive direction
@@ -80,12 +65,12 @@ public class CoordinatesTransformer {
     ///     Assumes that the systems are orthocanonical.
     /// </remarks>
     /// </summary>
-    private Matrix Calculate2DRotationMatrix(CoordinateSystem target_system) {
+    private Matrix Calculate2DRotationMatrix() {
         if (RootSystem.Dimension is not 2) {
             throw new InvalidOperationException("Root system is not 2D");
         }
 
-        if (target_system.Dimension is not 2) {
+        if (SecondarySystem.Dimension is not 2) {
             throw new InvalidOperationException("Target system is not 2D");
         }
 
@@ -93,10 +78,15 @@ public class CoordinatesTransformer {
         //check a single vector.
 
         Vector root_direction = RootSystem.DirectionVectors[0];
-        Vector target_direction = target_system.DirectionVectors[0];
+        Vector target_direction = SecondarySystem.DirectionVectors[0];
 
         if (root_direction.HaveSameCoordinatesAs(target_direction)) {
-            return GetRotationMatrixByRadian(0.0);
+            if (RootSystem.DirectionVectors[1].HaveSameCoordinatesAs(SecondarySystem.DirectionVectors[1])) {
+                return GetRotationMatrixByRadian(0.0);
+            } else {
+                double angle_rad = RootSystem.DirectionVectors[1].Find2DAngle(SecondarySystem.DirectionVectors[1]);
+                return GetRotationMatrixByRadian(angle_rad);
+            }
         } else {
             double angle_rad = root_direction.Find2DAngle(target_direction);
             return GetRotationMatrixByRadian(angle_rad);
@@ -107,39 +97,66 @@ public class CoordinatesTransformer {
     /// Transforms a point that was defined in the root coordinate system to it's target system
     /// representation.
     /// </summary>
-    public CoordinatesTransformer RotatePointByAngle(double angle) {
+    public MathPoint TransformToSecondarySystem(MathPoint point) {
+        point.ToMatrix().Print();
+        Console.WriteLine();
 
-        if (Point is null) {
-            return this;
-        }
-        Matrix m = GetRotationMatrixByDegree(angle) * Point.ToMatrix();
+        point = TranslatePoint(point);
+
+        point.ToMatrix().Print();
+        Console.WriteLine();
+
+        Matrix m = Calculate2DRotationMatrix() * point.ToMatrix();
 
         m.Print();
+        Console.WriteLine();
 
         MathPoint? temp = m.ToMathPoint();
 
         if (temp is null) {
             throw new InvalidOperationException("Conversion to math point resulted in null value!");
         } else {
-            Point = temp;
+            return temp;
         }
-
-        return this;
-
-
-
-        //To translate we just use the location of the new coordinate system and
-        //add it's components to the input point.
-
-        //https://www.songho.ca/math/homogeneous/homogeneous.html
-        //
-        //The common notation is to use w=1 for points and w=0 for vectors.
-        //The reason is that points can be translated but vectors cannot. You
-        //can change the length of a vector or its direction but all vectors
-        //with the same length/direction are considered equal, regardless their
-        //"starting position". So you can simply use the origin for all vectors.
-        //Setting w=0 and multiplying the translation matrix by the vector will
-        //result in the same vector.
-        //Matrix translation_matrix = new(input.Dimension + 1, 1);
     }
+
+    /// <summary>
+    /// Transforms a point that was defined in the root coordinate system to it's target system
+    /// representation.
+    /// </summary>
+    // public CoordinatesTransformer RotatePointByAngle(double angle) {
+    //
+    //     if (Point is null) {
+    //         return this;
+    //     }
+    //     Matrix m = GetRotationMatrixByDegree(angle) * Point.ToMatrix();
+    //
+    //     m.Print();
+    //
+    //     MathPoint? temp = m.ToMathPoint();
+    //
+    //     if (temp is null) {
+    //         throw new InvalidOperationException("Conversion to math point resulted in null value!");
+    //     } else {
+    //         Point = temp;
+    //     }
+    //
+    //     return this;
+    //
+    //
+    //
+    //     //To translate we just use the location of the new coordinate system and
+    //     //add it's components to the input point.
+    //
+    //     //https://www.songho.ca/math/homogeneous/homogeneous.html
+    //     //
+    //     //The common notation is to use w=1 for points and w=0 for vectors.
+    //     //The reason is that points can be translated but vectors cannot. You
+    //     //can change the length of a vector or its direction but all vectors
+    //     //with the same length/direction are considered equal, regardless their
+    //     //"starting position". So you can simply use the origin for all vectors.
+    //     //Setting w=0 and multiplying the translation matrix by the vector will
+    //     //result in the same vector.
+    //     //Matrix translation_matrix = new(input.Dimension + 1, 1);
+    // }
 }

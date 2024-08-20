@@ -11,9 +11,16 @@ public class RectangleBuilder {
     //they reside on. This is determined based on their coordinates.
     public required DoubleSize DrawingRegion { get; set; }
 
-    //public required CoordinatesTransformer CoordinateTransformer { get; set; }
+    public required CoordinatesTransformer Transformer { get; set; }
 
+    /// <summary>
+    /// An image point
+    /// </summary>
     private MathPoint? _pointA;
+
+    /// <summary>
+    /// An image point
+    /// </summary>
     private MathPoint? _pointB;
 
     public bool HasAllRequiredPoints => _pointA is not null && _pointB is not null;
@@ -97,15 +104,30 @@ public class RectangleBuilder {
         }
 
 
+        MathPoint UpperLeftNodeImageNormalizedPoint = new() {
+            Coordinates = new double[] {
+                UpperLeft[0]/DrawingRegion.Width,
+                UpperLeft[1]/DrawingRegion.Height,
+            }
+        };
+
+        MathPoint LowerRigttNodeImageNormalizedPoint = new() {
+            Coordinates = new double[] {
+                LowerRight[0]/DrawingRegion.Width,
+                LowerRight[1]/DrawingRegion.Height,
+            }
+        };
+
         RectangleAnnotation result = new() {
-            UpperLeftNode = new NodeAnnotation() {
-                NodeImageCoordinates = UpperLeft,
-                //NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(UpperLeft, DrawingRegion)
-                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(UpperLeft, DrawingRegion)
+            UpperLeftNode = new() {
+                NodeImagePoint = UpperLeft,
+                NodeImageNormalizedPoint = UpperLeftNodeImageNormalizedPoint,
+                NodeTikzPoint = Transformer.TransformToSecondarySystem(UpperLeftNodeImageNormalizedPoint)
             },
-            LowerRightNode = new NodeAnnotation() {
-                NodeImageCoordinates = LowerRight,
-                NormalizedCoordinates = TransformCoordinates.ToTikzCoordinates(LowerRight, DrawingRegion)
+            LowerRightNode = new() {
+                NodeImagePoint = LowerRight,
+                NodeImageNormalizedPoint = LowerRigttNodeImageNormalizedPoint,
+                NodeTikzPoint = Transformer.TransformToSecondarySystem(LowerRigttNodeImageNormalizedPoint)
             },
             Name = a_name
         };
