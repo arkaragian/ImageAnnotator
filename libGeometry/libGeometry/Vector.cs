@@ -83,6 +83,26 @@ public class Vector {
         return Math.Acos(numerator / denominator);
     }
 
+
+    /// <summary>
+    /// Finds a signed angle between vectors.
+    /// </summary>
+    public double FindSigned2DAngle(Vector other) {
+        //https://math.stackexchange.com/questions/529555/signed-angle-between-2-vectors
+        //NOTE: I don't completely understand this.
+        double angle = Find2DAngle(other);
+        //
+        //What would be a good definition of a signed angle between the vectors u and v?
+        //One possible definition is to define it by the rotation angle that applied to
+        //vector u results in a vector with same direction and sense of v.
+
+        if (Coordinates[1] >= other.Coordinates[1]) {
+            return angle;
+        } else {
+            return -angle;
+        }
+    }
+
     /// <summary>
     /// Returns a new vector that is the sum of this vector and the given argument
     /// </summary>

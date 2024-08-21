@@ -326,7 +326,6 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             Height = AnnotationCanvas!.Height
         };
 
-        //TODO: Handle the coordinate transformation
         MathPoint normalizedPoint = new() {
             Coordinates = new double[] {
                 imagePoint[0]/s.Width,

@@ -84,11 +84,13 @@ public class CoordinatesTransformer {
             if (RootSystem.DirectionVectors[1].HaveSameCoordinatesAs(SecondarySystem.DirectionVectors[1])) {
                 return GetRotationMatrixByRadian(0.0);
             } else {
-                double angle_rad = RootSystem.DirectionVectors[1].Find2DAngle(SecondarySystem.DirectionVectors[1]);
+                int sign = Math.Sign(RootSystem.DirectionVectors[1].Coordinates[1]) * Math.Sign(SecondarySystem.DirectionVectors[1].Coordinates[1]);
+                double angle_rad = RootSystem.DirectionVectors[1].FindSigned2DAngle(SecondarySystem.DirectionVectors[1]);
+                Console.WriteLine("Angle Rad = {0}", angle_rad);
                 return GetRotationMatrixByRadian(angle_rad);
             }
         } else {
-            double angle_rad = root_direction.Find2DAngle(target_direction);
+            double angle_rad = root_direction.FindSigned2DAngle(target_direction);
             return GetRotationMatrixByRadian(angle_rad);
         }
     }
@@ -116,6 +118,12 @@ public class CoordinatesTransformer {
         if (temp is null) {
             throw new InvalidOperationException("Conversion to math point resulted in null value!");
         } else {
+            //TODO: Not all edge cases are handled here
+            // int x_sign = Math.Sign(RootSystem.DirectionVectors[0].Coordinates[0]) * Math.Sign(SecondarySystem.DirectionVectors[0].Coordinates[0]);
+            // int y_sign = Math.Sign(RootSystem.DirectionVectors[1].Coordinates[1]) * Math.Sign(SecondarySystem.DirectionVectors[1].Coordinates[1]);
+            //
+            // temp.Coordinates[0] = y_sign * temp.Coordinates[0];
+            // temp.Coordinates[1] = x_sign * temp.Coordinates[1];
             return temp;
         }
     }
