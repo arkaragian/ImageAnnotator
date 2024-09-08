@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageAnnotator.ViewModel"
         xmlns:self="clr-namespace:ImageAnnotator"
+        xmlns:UserControls="clr-namespace:ImageAnnotator.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280"
         SizeChanged="ReDrawWindow">
@@ -66,10 +67,11 @@
                     <!-- The bindings in here assume the datacontext within as being each element -->
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Content="{Binding Name}"/>
+                            <UserControls:AnnotationListItemControl AnnotationName="{Binding Name}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
             </StackPanel>
 
             <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />

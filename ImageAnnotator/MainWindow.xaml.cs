@@ -24,6 +24,7 @@ public partial class MainWindow : Window {
         };
         Title = "Image Annotator";
         DataContext = ViewModel;
+        //The status bar needs a different data context
         WindowInfo.DataContext = this;
     }
 
