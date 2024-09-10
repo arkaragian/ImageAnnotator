@@ -80,7 +80,12 @@ public class Vector {
         double numerator = (Coordinates[0] * other.Coordinates[0]) + (Coordinates[1] * other.Coordinates[1]);
         double denominator = Magnitude() * other.Magnitude();
 
-        return Math.Acos(numerator / denominator);
+
+        // Calculate the angle in radians using the dot product formula
+        double angle = Math.Acos(numerator / denominator);
+
+
+        return angle;
     }
 
 
@@ -95,12 +100,22 @@ public class Vector {
         //What would be a good definition of a signed angle between the vectors u and v?
         //One possible definition is to define it by the rotation angle that applied to
         //vector u results in a vector with same direction and sense of v.
+        //
+        // Calculate the 2D cross product to determine the rotation direction
+        double crossProduct = (Coordinates[0] * other.Coordinates[1]) - (Coordinates[1] * other.Coordinates[0]);
 
-        if (Coordinates[1] >= other.Coordinates[1]) {
-            return angle;
-        } else {
-            return -angle;
+        // If the cross product is positive, the angle should be negative (clockwise rotation)
+        if (crossProduct > 0) {
+            angle = -angle;
         }
+
+        return angle;
+
+        // if (Coordinates[1] >= other.Coordinates[1]) {
+        //     return angle;
+        // } else {
+        //     return -angle;
+        // }
     }
 
     /// <summary>
