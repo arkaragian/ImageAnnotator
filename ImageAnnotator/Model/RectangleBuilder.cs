@@ -1,4 +1,3 @@
-using ImageAnnotator.Tikz;
 using libGeometry;
 
 namespace ImageAnnotator.Model;
@@ -51,10 +50,10 @@ public class RectangleBuilder {
                 UpperLeft = _pointA;
             } else {
                 UpperLeft = new MathPoint() {
-                    Coordinates = new double[] {
+                    Coordinates = [
                         _pointA[0],
-                        _pointA[1]
-                    }
+                        _pointB[1]
+                    ]
                 };
             }
         } else {
@@ -62,10 +61,10 @@ public class RectangleBuilder {
                 UpperLeft = _pointB;
             } else {
                 UpperLeft = new MathPoint() {
-                    Coordinates = new double[] {
+                    Coordinates = [
                         _pointB[0],
                         _pointA[1]
-                    }
+                    ]
                 };
             }
         }
@@ -77,10 +76,10 @@ public class RectangleBuilder {
                 LowerRight = _pointA;
             } else {
                 LowerRight = new MathPoint() {
-                    Coordinates = new double[] {
+                    Coordinates = [
                         _pointB[0],
                         _pointA[1]
-                    }
+                    ]
                 };
             }
         } else {
