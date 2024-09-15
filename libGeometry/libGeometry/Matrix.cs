@@ -62,6 +62,30 @@ public class Matrix {
         return result;
     }
 
+    /// <summary>
+    /// Produces a new matrix that is the element wise product with the elements of the input matrix
+    /// </summary>
+    public Matrix ElementWisePriduct(Matrix a) {
+
+        if (Columns != a.Columns || Rows != a.Rows) {
+            throw new InvalidOperationException("The matrix dimensions should match in a hadamand product");
+        }
+
+        double[,] data = new double[a.Rows, a.Columns];
+
+        for (int i = 0; i < a.Rows; i++) {
+            for (int j = 0; j < a.Columns; j++) {
+                data[i, j] = Data[i, j] * a.Data[i, j];
+            }
+        }
+
+        Matrix result = new(a.Rows, a.Columns) {
+            Data = data
+        };
+
+        return result;
+    }
+
     // Matrix multiplication
     public static Matrix operator *(Matrix a, Matrix b) {
         if (a.Columns != b.Rows) {
