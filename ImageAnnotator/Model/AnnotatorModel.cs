@@ -26,7 +26,7 @@ public class AnnotatorModel {
     /// <summary>
     /// The list of annotations
     /// </summary>
-    public List<IAnnotation> Annotations { get; private set; } = new();
+    public List<IAnnotation> Annotations { get; private set; } = [];
 
     private readonly CoordinatesTransformer _transformer;
 
@@ -34,33 +34,33 @@ public class AnnotatorModel {
         _transformer = new() {
             //The root system is the WPF coordinate system
             RootSystem = new() {
-                DirectionVectors = new Vector[] {
+                DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, -1.0}
+                        Coordinates = [0.0, -1.0]
                     }
-                }
+                ]
             },
             //The tikz coordinate system
             SecondarySystem = new() {
-                DirectionVectors = new Vector[] {
+                DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, -1.0}
+                        Coordinates = [0.0, 1.0]
                     }
-                },
+                ],
                 //Location of the tikz system defined in terms of root system
                 //coordinates
                 Location = new() {
-                    Coordinates = new double[] { 0.0, 1.0 }
+                    Coordinates = [0.0, 1.0]
                 }
             }
         };
