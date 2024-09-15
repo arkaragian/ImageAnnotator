@@ -12,17 +12,15 @@ public class CoordinateTransformationTests {
             //The root system is the WPF coordinate system
             RootSystem = new() {
                 DirectionVectors = [
-                    //X positive direction points towards the right
                     new() {
                         Coordinates = [1.0, 0.0]
                     },
-                    //Y positive direction points downwards
                     new() {
                         Coordinates = [0.0, 1.0]
                     }
                 ]
             },
-            //The tikz coordinate system
+            //Same orientation as the original system.
             SecondarySystem = new() {
                 DirectionVectors = [
                     //X direction
@@ -64,24 +62,19 @@ public class CoordinateTransformationTests {
             //The root system is the WPF coordinate system
             RootSystem = new() {
                 DirectionVectors = [
-                    //X positive direction points towards the right
                     new() {
                         Coordinates = [1.0, 0.0]
                     },
-                    //Y positive direction points downwards
                     new() {
                         Coordinates = [0.0, 1.0]
                     }
                 ]
             },
-            //The tikz coordinate system
             SecondarySystem = new() {
                 DirectionVectors = [
-                    //X direction
                     new() {
                         Coordinates = [1.0, 0.0]
                     },
-                    //Y direction
                     new() {
                         Coordinates = [0.0, -1.0]
                     }
@@ -115,34 +108,34 @@ public class CoordinateTransformationTests {
         CoordinatesTransformer Transformer = new() {
             //The root system is the WPF coordinate system
             RootSystem = new() {
-                DirectionVectors = new Vector[] {
+                DirectionVectors = [
                     //X positive direction points towards the right
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y positive direction points downwards
                     new() {
-                        Coordinates = new double[] {0.0, 1.0}
+                        Coordinates = [0.0, 1.0]
                     }
-                }
+                ]
             },
             //The tikz coordinate system
             SecondarySystem = new() {
-                DirectionVectors = new Vector[] {
+                DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {-1.0, 0.0}
+                        Coordinates = [-1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, -1.0}
+                        Coordinates = [0.0, -1.0]
                     }
-                },
+                ],
                 //Location of the tikz system defined in terms of root system
                 //coordinates and the positive sign depents on the direction
                 //is based on the
                 Location = new() {
-                    Coordinates = new double[] { 2.0, 2.0 }
+                    Coordinates = [2.0, 2.0]
                 }
             }
         };
@@ -150,7 +143,7 @@ public class CoordinateTransformationTests {
 
         //Defined in the root coordinate system
         MathPoint startPoint = new() {
-            Coordinates = new double[] { 12.0, 12.0 }
+            Coordinates = [12.0, 12.0]
         };
 
 
@@ -167,7 +160,7 @@ public class CoordinateTransformationTests {
         CoordinatesTransformer Transformer = new() {
             //The root system is the WPF coordinate system
             RootSystem = new() {
-                DirectionVectors = new Vector[] {
+                DirectionVectors = [
                     //X positive direction points towards the right
                     new() {
                         Coordinates = new double[] {1.0, 0.0}
@@ -176,7 +169,7 @@ public class CoordinateTransformationTests {
                     new() {
                         Coordinates = new double[] {0.0, -1.0}
                     }
-                }
+                ]
             },
             //The tikz coordinate system
             SecondarySystem = new() {
