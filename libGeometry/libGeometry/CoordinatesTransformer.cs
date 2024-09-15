@@ -60,6 +60,28 @@ public class CoordinatesTransformer {
     }
 
     /// <summary>
+    /// Indicates if the secondary system is a reflection of the root system
+    /// in any axis. If there is a reflection the function will also return the
+    /// direction index of the reflected axis.
+    /// </summary>
+    private (bool reflected, List<int>? axis) IsReflected() {
+        if (RootSystem.Dimension != SecondarySystem.Dimension) {
+            return (false, null);
+        }
+        List<int> result = [];
+        for (int i = 0; i < RootSystem.Dimension; i++) {
+            double angle = RootSystem.DirectionVectors[i].Find2DAngle(SecondarySystem.DirectionVectors[i]);
+            if (Math.Abs(angle - Math.PI) < 0.001) {
+                result.Add(i);
+            }
+        }
+        if (result.Count > 0) {
+            return (true, result);
+        }
+        return (false, null);
+    }
+
+    /// <summary>
     /// Calculates the rotation matrix between two coordinate systems
     /// <remarks>
     ///     Assumes that the systems are orthocanonical.
@@ -73,6 +95,11 @@ public class CoordinatesTransformer {
         if (SecondarySystem.Dimension is not 2) {
             throw new InvalidOperationException("Target system is not 2D");
         }
+
+        //Check to see if we have reflected systems. Because reflection cannot be
+        //represented as a rotation. At least before we move to more exotic mathematics.
+        //Eg reflection along the x axis would assume a rotation of 180 deg around the
+        //x axis. But the 2d rotation matrix is along the z axis.
 
         //Assuming that the coordinate system is orthocanonical we only need to
         //check a single vector.
@@ -95,6 +122,26 @@ public class CoordinatesTransformer {
         }
     }
 
+
+    /// <summary>
+    /// Calculates a reflection matrix based on the index of the reflected direction vector.
+    /// </summary>
+    private static Matrix CalculateReflectionMatrix(List<int> reflectionIndex) {
+        Matrix m = new(rows: 2, columns: 1) {
+            Data = new double[2, 1]{
+                {1},
+                {1}
+            }
+        };
+
+        foreach (int index in reflectionIndex) {
+            m.Data[index, 0] = -1;
+        }
+
+
+        return m;
+    }
+
     /// <summary>
     /// Transforms a point that was defined in the root coordinate system to it's target system
     /// representation.
@@ -105,25 +152,30 @@ public class CoordinatesTransformer {
 
         point = TranslatePoint(point);
 
-        point.ToMatrix().Print();
-        Console.WriteLine();
+        (bool reflected, List<int>? axis) = IsReflected();
+        if (reflected) {
+            //TODO: Handle reflection here axis determines a transformwation matrix
+            //We do a hadamand product for this matrix.
+            if (axis is null) {
+                throw new InvalidOperationException("Reflected system did not provide axis");
+            }
+            Matrix reflectionMatrix = CalculateReflectionMatrix(axis);
+            Matrix reflectedPoint = point.ToMatrix().ElementWisePriduct(reflectionMatrix);
+            MathPoint? temp2 = reflectedPoint.ToMathPoint();
+
+            if (temp2 is null) {
+                throw new InvalidOperationException("Conversion to math point resulted in null value!");
+            } else {
+                return temp2;
+            }
+        }
 
         Matrix m = Calculate2DRotationMatrix() * point.ToMatrix();
-
-        m.Print();
-        Console.WriteLine();
-
         MathPoint? temp = m.ToMathPoint();
 
         if (temp is null) {
             throw new InvalidOperationException("Conversion to math point resulted in null value!");
         } else {
-            //TODO: Not all edge cases are handled here
-            // int x_sign = Math.Sign(RootSystem.DirectionVectors[0].Coordinates[0]) * Math.Sign(SecondarySystem.DirectionVectors[0].Coordinates[0]);
-            // int y_sign = Math.Sign(RootSystem.DirectionVectors[1].Coordinates[1]) * Math.Sign(SecondarySystem.DirectionVectors[1].Coordinates[1]);
-            //
-            // temp.Coordinates[0] = y_sign * temp.Coordinates[0];
-            // temp.Coordinates[1] = x_sign * temp.Coordinates[1];
             return temp;
         }
     }
