@@ -1,3 +1,4 @@
+using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -13,7 +14,17 @@ public class RectangleAnnotation : IAnnotation {
     }
 
     public string ToCode(uint? identation) {
-        return "";
+        StringBuilder builder = new();
+        if (identation is not null) {
+            for (int i = 0; i < identation; i++) {
+                _ = builder.Append(' ');
+            }
+        }
+
+        string s = $"""\draw {LowerRightNode.ToTikzPointCoordinates()} rectangle {UpperLeftNode.ToTikzPointCoordinates()}""";
+
+        _ = builder.Append(s);
+        return builder.ToString();
     }
 
     public Geometry ToGeometry() {

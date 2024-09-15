@@ -44,6 +44,11 @@ public class NodeAnnotation : IAnnotation {
         NodeImagePoint[1] = y;
     }
 
+    public string ToTikzPointCoordinates() {
+        return $"( {NodeTikzPoint[0]:F3}, {NodeTikzPoint[1]:F3} )";
+
+    }
+
     public string ToCode(uint? identation) {
         StringBuilder builder = new();
         if (identation is not null) {
@@ -54,7 +59,7 @@ public class NodeAnnotation : IAnnotation {
 
         string no_spaces_name = Name.Replace(" ", "");
 
-        string s = $$"""\node[anchor=south west,inner sep=0] ({{no_spaces_name}}) at ( {{NodeTikzPoint[0].ToString("F3")}}, {{NodeTikzPoint[1].ToString("F3")}} ) { {{Text}} };""";
+        string s = $$"""\node[anchor=south west,inner sep=0] ({{no_spaces_name}}) at ( {{NodeTikzPoint[0]:F3}}, {{NodeTikzPoint[1]:F3}} ) { {{Text}} };""";
 
         _ = builder.Append(s);
         return builder.ToString();

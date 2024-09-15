@@ -1,3 +1,4 @@
+using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -18,7 +19,17 @@ public class LineAnnotation : IAnnotation {
     }
 
     public string ToCode(uint? identation) {
-        return "";
+        StringBuilder builder = new();
+        if (identation is not null) {
+            for (int i = 0; i < identation; i++) {
+                _ = builder.Append(' ');
+            }
+        }
+
+        string s = $"""\draw {StartPoint.ToTikzPointCoordinates()} -- {EndPoint.ToTikzPointCoordinates()};""";
+
+        _ = builder.Append(s);
+        return builder.ToString();
     }
 
     public Geometry ToGeometry() {
