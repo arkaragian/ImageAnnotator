@@ -54,10 +54,23 @@ public class LineAnnotation : IAnnotation {
 
     ///<inheritdoc cref=IAnnotation.ToShape/>
     public Shape ToShape() {
-        return new Path {
-            Data = ToGeometry(),
-            Stroke = Brushes.Black,
-            StrokeThickness = 4,
+        // Path path = new() {
+        //     Data = ToGeometry(),
+        //     Stroke = Brushes.Black,
+        //     StrokeThickness = 4,
+        // };
+        // return path;
+        //
+        return new ColorLine() {
+            StartPoint = new() {
+                X = StartPoint.NodeImagePoint[0],
+                Y = StartPoint.NodeImagePoint[1],
+            },
+            EndPoint = new() {
+                X = EndPoint.NodeImagePoint[0],
+                Y = EndPoint.NodeImagePoint[1],
+            },
+            StrokeThickness = 2
         };
     }
 }
