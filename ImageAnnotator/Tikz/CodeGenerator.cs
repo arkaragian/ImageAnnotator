@@ -14,7 +14,7 @@ public class CodeGenerator {
     public string GenerateCode() {
         StringBuilder builder = new();
         _ = builder.Append("\\begin{tikzpicture}").AppendLine();
-        _ = builder.Append("  \\node[anchor=south west,inner sep=0] (image) at (0,0) { \\includegraphics[width=\\textwidth]{").Append(ImagePath).AppendLine("}}");
+        _ = builder.Append("  \\node[anchor=south west,inner sep=0] (image) at (0,0) { \\includegraphics[width=\\textwidth]{").Append(ImagePath).AppendLine("}};");
         if (Annotations.Count > 0) {
             _ = builder.Append("  \\begin{scope}[x={(image.south east)},y={(image.north west)}]").AppendLine();
             foreach (IAnnotation annotation in Annotations) {

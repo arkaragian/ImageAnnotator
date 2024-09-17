@@ -21,7 +21,7 @@ public class RectangleAnnotation : IAnnotation {
             }
         }
 
-        string s = $"""\draw {LowerRightNode.ToTikzPointCoordinates()} rectangle {UpperLeftNode.ToTikzPointCoordinates()}""";
+        string s = $"""\draw {LowerRightNode.ToTikzPointCoordinates()} rectangle {UpperLeftNode.ToTikzPointCoordinates()};""";
 
         _ = builder.Append(s);
         return builder.ToString();
