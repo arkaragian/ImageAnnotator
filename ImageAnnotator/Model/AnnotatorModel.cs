@@ -81,6 +81,13 @@ public class AnnotatorModel {
         Annotations.Add(na);
     }
 
+    public void RemoveAnnotation(IAnnotation a) {
+        bool ok = Annotations.Remove(a);
+        if (ok) {
+            // AnnotationCounter--;
+        }
+    }
+
     public void ResizeAnnotationCoordinates(DoubleSize size) {
         foreach (IAnnotation a in Annotations) {
             a.ResizeCoordinates(size);

@@ -1,4 +1,5 @@
-﻿using ImageAnnotator.ViewModel;
+﻿using ImageAnnotator.Model;
+using ImageAnnotator.ViewModel;
 using libGeometry;
 using Microsoft.Win32;
 using System;
@@ -71,6 +72,26 @@ public partial class MainWindow : Window {
     /// </summary>
     private void InsertRectangleCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
         ViewModel.BeginRectangleInsertion();
+    }
+
+    private void DeleteAnnotationCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.CanDeleteAnnotation;
+        if (!e.CanExecute) {
+            MessageBox.Show("Cannot delete!");
+        }
+    }
+
+    private void DeleteAnnotationCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
+        //Actual Delete the annotation.
+        //Find the selected annotation.
+        int index = AnnotationList.SelectedIndex;
+        if (index is -1) {
+            return;
+        }
+        object? o = AnnotationList.SelectedItem;
+        if (o is not null) {
+            ViewModel.DeleteSelectedAnnotation((IAnnotation)o!);
+        }
     }
 
     /// <summary>

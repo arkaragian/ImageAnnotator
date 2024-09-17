@@ -130,6 +130,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         }
     }
 
+    public bool CanDeleteAnnotation => (CurrentInputState is InputState.Idle) && Model.Annotations.Count > 0;
+
     /// <summary>
     /// Indicates if the view is waiting for any input input
     /// </summary>
@@ -179,6 +181,17 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return null;
     }
 
+    public void DeleteSelectedAnnotation(IAnnotation a) {
+        Model.RemoveAnnotation(a);
+
+        DrawAnnotations(AnnotationCanvas);
+
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+        OnPropertyChanged(nameof(Annotations));
+    }
+
     /// <summary>
     /// Draws a grid to the specified canvas.
     /// </summary>
@@ -197,7 +210,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
         double w = canvas.Width;
         double h = canvas.Height;
-        for (int i = 0; i < 11; i++) {
+        for (int i = 1; i < 10; i++) {
             double step = (int)(w * i * 0.1);
             Line l = new() {
                 X1 = step,
@@ -206,8 +219,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
                 Y1 = 0,
                 Y2 = h,
 
-                Stroke = System.Windows.Media.Brushes.LightSteelBlue,
-                StrokeThickness = 2
+                Stroke = System.Windows.Media.Brushes.Black,
+                StrokeThickness = 2,
+                StrokeDashArray = [2.0, 2.0]
                 //Brush = System.Windows.Media.Brushes.Black
 
             };
@@ -215,7 +229,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             _ = canvas.Children.Add(l);
         }
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 1; i < 10; i++) {
             double step = (int)(h * i * 0.1);
             Line l = new() {
                 Y1 = step,
@@ -224,8 +238,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
                 X1 = 0,
                 X2 = w,
 
-                Stroke = System.Windows.Media.Brushes.LightSteelBlue,
-                StrokeThickness = 2
+                Stroke = System.Windows.Media.Brushes.Black,
+                StrokeThickness = 2,
+                StrokeDashArray = [2.0, 2.0]
                 //Brush = System.Windows.Media.Brushes.Black
 
             };

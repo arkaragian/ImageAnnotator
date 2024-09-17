@@ -16,6 +16,7 @@
         <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertLineCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertRectangleCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.DeleteAnnotation" CanExecute="DeleteAnnotationCommand_CanExecute" Executed="DeleteAnnotationCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -23,6 +24,7 @@
             <KeyBinding Key="N"  Command="self:AnnotatorCommands.InsertNode"/>
             <KeyBinding Key="L"  Command="self:AnnotatorCommands.InsertLine"/>
             <KeyBinding Key="R"  Command="self:AnnotatorCommands.InsertRectangle"/>
+            <KeyBinding Key="Delete"  Command="self:AnnotatorCommands.DeleteAnnotation"/>
     </Window.InputBindings>
 
    
