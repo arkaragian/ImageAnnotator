@@ -127,29 +127,31 @@ public partial class MainWindow : Window {
     /// Handles all the clicks that happen in the canvas.
     /// </summary>
     private void AnnotationCanvasClick(object sender, MouseEventArgs e) {
+        Console.WriteLine("Mouse Click Event!");
         //Only handle input is we are really waiting for one
         if (!ViewModel.IsWaitingForInput) {
+            e.Handled = true;
             return;
         }
 
         Point p = e.GetPosition(AnnotationCanvas);
         MathPoint mp = new() {
-            Coordinates = new double[] {
-                p.X,
-                p.Y
-            }
+            Coordinates = [p.X, p.Y]
         };
         if (ViewModel.IsWaitingForNodeInput) {
+            ViewModel.ClearTransientAnnotation();
             ViewModel.InsertNode(mp);
             return;
         }
 
         if (ViewModel.IsWaitingForLineInput) {
+            ViewModel.ClearTransientAnnotation();
             ViewModel.InsertLine(mp);
             return;
         }
 
         if (ViewModel.IsWaitingForRectangleInput) {
+            ViewModel.ClearTransientAnnotation();
             ViewModel.InsertRectangle(mp);
             return;
         }
@@ -190,9 +192,16 @@ public partial class MainWindow : Window {
     }
 
     /// <summary>
-    /// Handles the movement of the mouse over the image control
+    /// Handles the movement of the mouse over the image control. This method calculates
+    /// a normalized point and feeds it to the viewmodel in order to update the Cursor
+    /// Position and draw a transient annotation.
     /// </summary>
     private void Image_MouseMove(object sender, MouseEventArgs e) {
+        Console.WriteLine("Mouse Move Event!");
+        if (e.LeftButton == MouseButtonState.Pressed) {
+            AnnotationCanvasClick(sender, e);
+            return;
+        }
         // Get the current mouse position. This however is not normalized to the size
         // of the image. As the window may be resized.
         Point position = e.GetPosition(ImageDisplayControl);
@@ -208,5 +217,6 @@ public partial class MainWindow : Window {
         };
 
         ViewModel.UpdateCursorPosition(np, s);
+        e.Handled = true;
     }
 } //End of class

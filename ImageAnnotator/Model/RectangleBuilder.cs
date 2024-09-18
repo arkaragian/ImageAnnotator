@@ -15,18 +15,18 @@ public class RectangleBuilder {
     /// <summary>
     /// An image point
     /// </summary>
-    private MathPoint? _pointA;
+    public MathPoint? PointA { get; set; }
 
     /// <summary>
     /// An image point
     /// </summary>
     private MathPoint? _pointB;
 
-    public bool HasAllRequiredPoints => _pointA is not null && _pointB is not null;
+    public bool HasAllRequiredPoints => PointA is not null && _pointB is not null;
 
     public RectangleBuilder AddPoint(MathPoint point) {
-        if (_pointA is null) {
-            _pointA = point;
+        if (PointA is null) {
+            PointA = point;
         } else {
             _pointB = point;
         }
@@ -35,7 +35,7 @@ public class RectangleBuilder {
 
 
     public RectangleAnnotation? Build(int? annotationCounter) {
-        if (_pointA is null) {
+        if (PointA is null) {
             return null;
         }
 
@@ -43,57 +43,8 @@ public class RectangleBuilder {
             return null;
         }
 
-        MathPoint UpperLeft;
-        //Determine Upper Left Point
-        if (_pointA[0] < _pointB[0]) {
-            if (_pointA[1] < _pointB[1]) {
-                UpperLeft = _pointA;
-            } else {
-                UpperLeft = new MathPoint() {
-                    Coordinates = [
-                        _pointA[0],
-                        _pointB[1]
-                    ]
-                };
-            }
-        } else {
-            if (_pointB[1] < _pointA[1]) {
-                UpperLeft = _pointB;
-            } else {
-                UpperLeft = new MathPoint() {
-                    Coordinates = [
-                        _pointB[0],
-                        _pointA[1]
-                    ]
-                };
-            }
-        }
-
-        MathPoint LowerRight;
-
-        if (_pointA[1] > _pointB[1]) {
-            if (_pointA[0] > _pointB[0]) {
-                LowerRight = _pointA;
-            } else {
-                LowerRight = new MathPoint() {
-                    Coordinates = [
-                        _pointB[0],
-                        _pointA[1]
-                    ]
-                };
-            }
-        } else {
-            if (_pointB[0] > _pointA[0]) {
-                LowerRight = _pointB;
-            } else {
-                LowerRight = new MathPoint() {
-                    Coordinates = new double[] {
-                        _pointA[0],
-                        _pointB[1]
-                    }
-                };
-            }
-        }
+        MathPoint UpperLeft = RectanglePointResolver.UpperLeftPoint(PointA, _pointB);
+        MathPoint LowerRight = RectanglePointResolver.LowerRightPoint(PointA, _pointB);
 
         string a_name;
         if (annotationCounter is null) {
@@ -104,17 +55,17 @@ public class RectangleBuilder {
 
 
         MathPoint UpperLeftNodeImageNormalizedPoint = new() {
-            Coordinates = new double[] {
+            Coordinates = [
                 UpperLeft[0]/DrawingRegion.Width,
                 UpperLeft[1]/DrawingRegion.Height,
-            }
+            ]
         };
 
         MathPoint LowerRigttNodeImageNormalizedPoint = new() {
-            Coordinates = new double[] {
+            Coordinates = [
                 LowerRight[0]/DrawingRegion.Width,
                 LowerRight[1]/DrawingRegion.Height,
-            }
+            ]
         };
 
         RectangleAnnotation result = new() {
@@ -131,7 +82,7 @@ public class RectangleBuilder {
             Name = a_name
         };
 
-        _pointA = null;
+        PointA = null;
         _pointB = null;
 
         return result;

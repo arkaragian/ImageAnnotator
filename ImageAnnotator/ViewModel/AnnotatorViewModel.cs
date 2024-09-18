@@ -317,17 +317,43 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
     public void UpdateCursorPosition(Point p, Size controlSize) {
+        ClearTransientAnnotation();
         //Also draw a temp item.
         if (CurrentInputState is InputState.WaitingForInput && CurrentInsertionType is not InsertionType.Node) {
             if (CurrentInsertionType is InsertionType.Rectangle) {
+                //TODO: Resolve which point is upper left and lower right. Reuse
+                //the logic from the helper.
+                if (_rectangleBuilder?.PointA is not null) {
+                    MathPoint pointB = new() {
+                        Coordinates = [p.X, p.Y]
+                    };
+                    MathPoint ul = RectanglePointResolver.UpperLeftPoint(_rectangleBuilder.PointA, pointB);
+                    MathPoint lr = RectanglePointResolver.LowerRightPoint(_rectangleBuilder.PointA, pointB);
+                    RectangleAnnotation r = new() {
+                        UpperLeftNode = new() {
+                            NodeImagePoint = ul,
+                            NodeImageNormalizedPoint = new() {
+                                Coordinates = [0, 0]
+                            },
+                            NodeTikzPoint = new() {
+                                Coordinates = [0, 0]
+                            }
+                        },
+                        LowerRightNode = new() {
+                            NodeImagePoint = lr,
+                            NodeImageNormalizedPoint = new() {
+                                Coordinates = [0, 0]
+                            },
+                            NodeTikzPoint = new() {
+                                Coordinates = [0, 0]
+                            }
+                        }
+                    };
+                    TransientAnotation = r.ToShape();
+                }
             }
 
             if (CurrentInsertionType is InsertionType.Line) {
-
-                if (TransientAnotation is not null) {
-                    AnnotationCanvas?.Children.Remove(TransientAnotation!);
-                }
-
                 if (_lineBuilder?.StartPoint is not null) {
                     TransientAnotation = new ColorLine() {
                         StartPoint = new System.Windows.Point() {
@@ -342,19 +368,28 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
                 }
             }
         } else {
-            TransientAnotation = null;
+            ClearTransientAnnotation();
         }
 
         if (TransientAnotation is not null) {
             _ = AnnotationCanvas?.Children.Add(TransientAnotation!);
         }
 
-
         CursorPosition = p;
         NormalizedCursorPosition = NormalizePoint(p, controlSize);
 
         OnPropertyChanged(nameof(CursorPosition));
         OnPropertyChanged(nameof(NormalizedCursorPosition));
+    }
+
+    /// <summary>
+    /// Remove any transient annotation from the canvas.
+    /// </summary>
+    public void ClearTransientAnnotation() {
+        if (TransientAnotation is not null) {
+            AnnotationCanvas?.Children.Remove(TransientAnotation!);
+            TransientAnotation = null;
+        }
     }
 
     protected virtual void OnPropertyChanged(string propertyName) {
@@ -468,7 +503,11 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         if (!_lineBuilder.HasStartPoint) {
             _ = _lineBuilder.WithStartPoint(point);
             StatusMessage = "Enter Second Point";
+            CurrentInputState = InputState.WaitingForInput;
+            CurrentInsertionType = InsertionType.Line;
             OnPropertyChanged(nameof(StatusMessage));
+            OnPropertyChanged(nameof(CurrentInputState));
+            OnPropertyChanged(nameof(CurrentInsertionType));
             return;
         }
 
