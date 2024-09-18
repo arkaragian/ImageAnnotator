@@ -192,7 +192,7 @@ public partial class MainWindow : Window {
     /// <summary>
     /// Handles the movement of the mouse over the image control
     /// </summary>
-    private void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
+    private void Image_MouseMove(object sender, MouseEventArgs e) {
         // Get the current mouse position. This however is not normalized to the size
         // of the image. As the window may be resized.
         Point position = e.GetPosition(ImageDisplayControl);

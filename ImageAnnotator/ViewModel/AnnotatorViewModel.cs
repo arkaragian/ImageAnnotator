@@ -92,6 +92,11 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     public TextBox? CodeArea { get; set; }
 
+    /// <summary>
+    /// A transient annotation that is drawn during user input;
+    /// </summary>
+    public Shape? TransientAnotation { get; set; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
@@ -208,6 +213,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             throw new InvalidOperationException("Zero canvas height!");
         }
 
+        double thick = 3.0;
+
         double w = canvas.Width;
         double h = canvas.Height;
         for (int i = 1; i < 10; i++) {
@@ -220,8 +227,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
                 Y2 = h,
 
                 Stroke = System.Windows.Media.Brushes.Black,
-                StrokeThickness = 2,
-                StrokeDashArray = [2.0, 2.0]
+                StrokeThickness = 1,
+                StrokeDashArray = [thick, thick]
                 //Brush = System.Windows.Media.Brushes.Black
 
             };
@@ -239,8 +246,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
                 X2 = w,
 
                 Stroke = System.Windows.Media.Brushes.Black,
-                StrokeThickness = 2,
-                StrokeDashArray = [2.0, 2.0]
+                StrokeThickness = 1,
+                StrokeDashArray = [thick, thick]
                 //Brush = System.Windows.Media.Brushes.Black
 
             };
@@ -310,6 +317,39 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
     public void UpdateCursorPosition(Point p, Size controlSize) {
+        //Also draw a temp item.
+        if (CurrentInputState is InputState.WaitingForInput && CurrentInsertionType is not InsertionType.Node) {
+            if (CurrentInsertionType is InsertionType.Rectangle) {
+            }
+
+            if (CurrentInsertionType is InsertionType.Line) {
+
+                if (TransientAnotation is not null) {
+                    AnnotationCanvas?.Children.Remove(TransientAnotation!);
+                }
+
+                if (_lineBuilder?.StartPoint is not null) {
+                    TransientAnotation = new ColorLine() {
+                        StartPoint = new System.Windows.Point() {
+                            X = _lineBuilder.StartPoint[0],
+                            Y = _lineBuilder.StartPoint[1],
+                        },
+                        EndPoint = new System.Windows.Point() {
+                            X = p.X,
+                            Y = p.Y
+                        }
+                    };
+                }
+            }
+        } else {
+            TransientAnotation = null;
+        }
+
+        if (TransientAnotation is not null) {
+            _ = AnnotationCanvas?.Children.Add(TransientAnotation!);
+        }
+
+
         CursorPosition = p;
         NormalizedCursorPosition = NormalizePoint(p, controlSize);
 

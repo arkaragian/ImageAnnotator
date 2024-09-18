@@ -1,4 +1,3 @@
-using ImageAnnotator.Tikz;
 using libGeometry;
 
 namespace ImageAnnotator.Model;
@@ -15,6 +14,14 @@ public class LineBuilder {
     private MathPoint? _startPoint;
     private MathPoint? _endPoint;
 
+
+    public MathPoint? StartPoint {
+        get {
+            return _startPoint;
+        }
+    }
+
+    public MathPoint? EndPoint => _startPoint;
     public bool HasStartPoint => _startPoint is not null;
     public bool HasEndPoint => _endPoint is not null;
 
