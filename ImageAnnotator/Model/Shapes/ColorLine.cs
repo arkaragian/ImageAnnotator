@@ -2,20 +2,35 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace ImageAnnotator.Model;
+namespace ImageAnnotator.Model.Shapes;
 
 /// <summary>
-/// A shape that represents a line with with it's two nodes colored.
+/// A Custom shape that is a line with the only difference that it's starting and
+/// end points are colored circles.
 /// </summary>
 public class ColorLine : Shape {
 
+    /// <summary>
+    /// The starting point of the line.
+    /// </summary>
     public required Point StartPoint { get; set; }
+
+    /// <summary>
+    /// The ending point of the line.
+    /// </summary>
     public required Point EndPoint { get; set; }
+
+    /// <summary>
+    /// The drawing radus of the nodes that are pixels.
+    /// </summary>
     public double CircleRadius { get; set; } = 5;
 
-    // Add a new property for the circle's fill color
+    /// <summary>
+    /// The brush that will be used for the circle.
+    /// </summary>
     public Brush CircleFill { get; set; } = Brushes.Red;
 
+    ///<inheritdoc/>
     protected override Geometry DefiningGeometry {
         get {
 
@@ -45,14 +60,13 @@ public class ColorLine : Shape {
         }
     }
 
+    ///<inheritdoc/>
     protected override void OnRender(DrawingContext drawingContext) {
-
         // Draw the line with the default stroke
         drawingContext.DrawGeometry(brush: null, new Pen(Brushes.Black, StrokeThickness), new LineGeometry(StartPoint, EndPoint));
 
         // Draw the circle with the specified fill color
         drawingContext.DrawGeometry(CircleFill, null, new EllipseGeometry(StartPoint, CircleRadius, CircleRadius));
-
 
         // Draw the circle with the specified fill color
         drawingContext.DrawGeometry(CircleFill, null, new EllipseGeometry(EndPoint, CircleRadius, CircleRadius));
