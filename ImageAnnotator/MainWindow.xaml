@@ -78,27 +78,29 @@
 
             <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />
 
-            <!--
-                Elements in a grid canvas are overlayed on top each other that is
-                why we specify grid here
-            -->
-            <Grid Grid.Column="2">
-                <Image Source="{Binding ImagePath}"
-                       Name="ImageDisplayControl"
-                       d:DesignHeight="400"
-                       MouseMove="Image_MouseMove"/>
-                <Canvas Background="Transparent"
-                        Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
-                        Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
-                        Name="GridCanvas"/>
-                <Canvas Background="Transparent"
-                        Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
-                        Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
-                        Name="AnnotationCanvas"
-                        MouseMove="Image_MouseMove"
-                        MouseDown="AnnotationCanvasClick"
-                        SizeChanged="AnnotationCanvasResized"/>
-            </Grid>
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <!--
+                    Elements in a grid canvas are overlayed on top each other that is
+                    why we specify grid here
+                -->
+                <Grid Name="GridRowContainer">
+                    <Image Source="{Binding ImagePath}"
+                           Name="ImageDisplayControl"
+                           d:DesignHeight="400"
+                           MouseMove="Image_MouseMove"/>
+                    <Canvas Background="Transparent"
+                            Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                            Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                            Name="GridCanvas"/>
+                    <Canvas Background="Transparent"
+                            Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
+                            Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
+                            Name="AnnotationCanvas"
+                            MouseMove="Image_MouseMove"
+                            MouseDown="AnnotationCanvasClick"
+                            SizeChanged="AnnotationCanvasResized"/>
+                </Grid>
+            </ScrollViewer>
         </Grid>
 
         <TextBox Name="CodeText" Grid.Row="2" FontSize="12" IsReadOnly="True"/>

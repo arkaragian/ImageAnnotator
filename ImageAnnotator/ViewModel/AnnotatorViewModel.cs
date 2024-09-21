@@ -1,4 +1,5 @@
 ﻿using ImageAnnotator.Model;
+using ImageAnnotator.Model.Shapes;
 using ImageAnnotator.Tikz;
 using libGeometry;
 using System;

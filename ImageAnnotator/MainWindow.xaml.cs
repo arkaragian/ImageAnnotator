@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ImageAnnotator;
 
@@ -14,6 +15,8 @@ public partial class MainWindow : Window {
     /// The model of the application. All data are contained there.
     /// </summary>
     private readonly AnnotatorViewModel ViewModel;
+
+    private readonly ScaleTransform _scaleTransform = new(1.0, 1.0);
 
     public MainWindow() {
         InitializeComponent();
@@ -27,6 +30,33 @@ public partial class MainWindow : Window {
         DataContext = ViewModel;
         //The status bar needs a different data context
         WindowInfo.DataContext = this;
+
+        GridRowContainer.LayoutTransform = _scaleTransform;
+
+        GridRowContainer.MouseWheel += Canvas_MouseWheel;
+
+    }
+
+    private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e) {
+        // Determine the zoom direction
+        if (e.Delta > 0) {
+            ZoomIn();
+        } else {
+            ZoomOut();
+        }
+    }
+
+    private void ZoomIn() {
+        _scaleTransform.ScaleX += 0.1;
+        _scaleTransform.ScaleY += 0.1;
+    }
+
+    private void ZoomOut() {
+        if (_scaleTransform.ScaleX > 0.2) // prevent too much zoom out
+        {
+            _scaleTransform.ScaleX -= 0.1;
+            _scaleTransform.ScaleY -= 0.1;
+        }
     }
 
     /// <summary>

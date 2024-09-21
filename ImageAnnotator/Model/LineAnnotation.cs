@@ -1,3 +1,4 @@
+using ImageAnnotator.Model.Shapes;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
