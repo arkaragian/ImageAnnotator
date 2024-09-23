@@ -37,4 +37,6 @@ public interface IAnnotation {
     /// number of spaces.
     /// </param>
     string ToCode(uint? identation);
+
+    void Translate(int xTranslation, int yTranslation, DoubleSize size);
 }

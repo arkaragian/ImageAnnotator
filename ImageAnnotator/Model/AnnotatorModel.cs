@@ -93,4 +93,10 @@ public class AnnotatorModel {
             a.ResizeCoordinates(size);
         }
     }
+
+    public void TranslateAnnotation(int index, int xTranslation, int yTranslation, DoubleSize s) {
+        IAnnotation a = Annotations[index];
+        a.Translate(xTranslation, yTranslation, s);
+        Annotations[index] = a;
+    }
 }

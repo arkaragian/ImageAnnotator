@@ -17,6 +17,10 @@
         <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertLineCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertRectangleCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.DeleteAnnotation" CanExecute="DeleteAnnotationCommand_CanExecute" Executed="DeleteAnnotationCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.TranslateUp" CanExecute="TranslationCommand_CanExecute" Executed="TranslateUp_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.TranslateDown" CanExecute="TranslationCommand_CanExecute" Executed="TranslateDown_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.TranslateLeft" CanExecute="TranslationCommand_CanExecute" Executed="TranslateLeft_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.TranslateRight" CanExecute="TranslationCommand_CanExecute" Executed="TranslateRight_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -25,6 +29,10 @@
             <KeyBinding Key="L"  Command="self:AnnotatorCommands.InsertLine"/>
             <KeyBinding Key="R"  Command="self:AnnotatorCommands.InsertRectangle"/>
             <KeyBinding Key="Delete"  Command="self:AnnotatorCommands.DeleteAnnotation"/>
+            <KeyBinding Key="Up"  Command="self:AnnotatorCommands.TranslateUp"/>
+            <KeyBinding Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>
+            <KeyBinding Key="Left"  Command="self:AnnotatorCommands.TranslateLeft"/>
+            <KeyBinding Key="Right"  Command="self:AnnotatorCommands.TranslateRight"/>
     </Window.InputBindings>
 
    
@@ -78,7 +86,8 @@
 
             <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />
 
-            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <!-- We want to be able to zoom in -->
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                 <!--
                     Elements in a grid canvas are overlayed on top each other that is
                     why we specify grid here
@@ -98,7 +107,17 @@
                             Name="AnnotationCanvas"
                             MouseMove="Image_MouseMove"
                             MouseDown="AnnotationCanvasClick"
-                            SizeChanged="AnnotationCanvasResized"/>
+                            SizeChanged="AnnotationCanvasResized">
+                        <Canvas.Style>
+                            <Style TargetType="{x:Type Canvas}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True" >
+                                        <Setter Property="Cursor" Value="Cross" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Canvas.Style>
+                    </Canvas>
                 </Grid>
             </ScrollViewer>
         </Grid>

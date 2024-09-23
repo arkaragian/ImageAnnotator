@@ -74,4 +74,7 @@ public class LineAnnotation : IAnnotation {
             StrokeThickness = 2
         };
     }
+
+    public void Translate(int x, int y, DoubleSize s) {
+    }
 }

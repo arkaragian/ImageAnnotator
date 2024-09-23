@@ -104,10 +104,55 @@ public partial class MainWindow : Window {
         ViewModel.BeginRectangleInsertion();
     }
 
+    private void TranslationCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = AnnotationList.SelectedIndex is not -1;
+        if (e.CanExecute) {
+            Console.WriteLine("Will execute");
+        } else {
+            Console.WriteLine("Cannot execute");
+        }
+    }
+
+    private void TranslateUp_Executed(object sender, ExecutedRoutedEventArgs e) {
+        int index = AnnotationList.SelectedIndex;
+        DoubleSize DrawingRegion = new() {
+            Width = AnnotationCanvas!.Width,
+            Height = AnnotationCanvas.Height,
+        };
+        ViewModel.TranslateIndices(index, xTranslation: 0, yTranslation: -5, DrawingRegion);
+    }
+
+    private void TranslateDown_Executed(object sender, ExecutedRoutedEventArgs e) {
+        int index = AnnotationList.SelectedIndex;
+        DoubleSize DrawingRegion = new() {
+            Width = AnnotationCanvas!.Width,
+            Height = AnnotationCanvas.Height,
+        };
+        ViewModel.TranslateIndices(index, xTranslation: 0, yTranslation: 5, DrawingRegion);
+    }
+
+    private void TranslateLeft_Executed(object sender, ExecutedRoutedEventArgs e) {
+        int index = AnnotationList.SelectedIndex;
+        DoubleSize DrawingRegion = new() {
+            Width = AnnotationCanvas!.Width,
+            Height = AnnotationCanvas.Height,
+        };
+        ViewModel.TranslateIndices(index, xTranslation: -5, yTranslation: 0, DrawingRegion);
+    }
+
+    private void TranslateRight_Executed(object sender, ExecutedRoutedEventArgs e) {
+        int index = AnnotationList.SelectedIndex;
+        DoubleSize DrawingRegion = new() {
+            Width = AnnotationCanvas!.Width,
+            Height = AnnotationCanvas.Height,
+        };
+        ViewModel.TranslateIndices(index, xTranslation: 5, yTranslation: 0, DrawingRegion);
+    }
+
     private void DeleteAnnotationCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
         e.CanExecute = ViewModel.CanDeleteAnnotation;
         if (!e.CanExecute) {
-            MessageBox.Show("Cannot delete!");
+            _ = MessageBox.Show("Cannot delete!");
         }
     }
 

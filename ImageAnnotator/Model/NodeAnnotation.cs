@@ -89,4 +89,16 @@ public class NodeAnnotation : IAnnotation {
             Margin = new Thickness(NodeImagePoint[0] - (Width / 2.0), NodeImagePoint[1] - (Height / 2.0), 0, 0)
         };
     }
+
+    public void Translate(int xTranslation, int yTranslation, DoubleSize size) {
+        NodeImagePoint[0] = NodeImagePoint[0] + xTranslation;
+        NodeImagePoint[1] = NodeImagePoint[1] + yTranslation;
+
+        NodeImageNormalizedPoint[0] = NodeImagePoint[0] / size.Width;
+        NodeImageNormalizedPoint[1] = NodeImagePoint[1] / size.Height;
+
+        //TODO: Calculate the tikz point for this we need all the logic of the
+        //coordinate transformation.
+
+    }
 }

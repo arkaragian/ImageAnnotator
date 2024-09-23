@@ -418,10 +418,10 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         };
 
         MathPoint normalizedPoint = new() {
-            Coordinates = new double[] {
+            Coordinates = [
                 imagePoint[0]/s.Width,
                 imagePoint[1]/s.Height,
-            }
+            ]
         };
         //DoublePoint normalizedPoint = TransformCoordinates.ToTikzCoordinates(imagePoint, s);
 
@@ -469,33 +469,33 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             Transformer = new() {
                 //The root system is the WPF coordinate system
                 RootSystem = new() {
-                    DirectionVectors = new Vector[] {
+                    DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, -1.0}
+                        Coordinates = [0.0, -1.0]
                     }
-                }
+                ]
                 },
                 //The tikz coordinate system
                 SecondarySystem = new() {
-                    DirectionVectors = new Vector[] {
+                    DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, 1.0}
+                        Coordinates = [0.0, 1.0]
                     }
-                },
+                ],
                     //Location of the tikz system defined in terms of root system
                     //coordinates
                     Location = new() {
-                        Coordinates = new double[] { 0.0, 1.0 }
+                        Coordinates = [0.0, 1.0]
                     }
                 }
             }
@@ -552,33 +552,33 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
             Transformer = new() {
                 //The root system is the WPF coordinate system
                 RootSystem = new() {
-                    DirectionVectors = new Vector[] {
+                    DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, -1.0}
+                        Coordinates = [0.0, -1.0]
                     }
-                }
+                ]
                 },
                 //The tikz coordinate system
                 SecondarySystem = new() {
-                    DirectionVectors = new Vector[] {
+                    DirectionVectors = [
                     //X direction
                     new() {
-                        Coordinates = new double[] {1.0, 0.0}
+                        Coordinates = [1.0, 0.0]
                     },
                     //Y direction
                     new() {
-                        Coordinates = new double[] {0.0, 1.0}
+                        Coordinates = [0.0, 1.0]
                     }
-                },
+                ],
                     //Location of the tikz system defined in terms of root system
                     //coordinates
                     Location = new() {
-                        Coordinates = new double[] { 0.0, 1.0 }
+                        Coordinates = [0.0, 1.0]
                     }
                 }
             }
@@ -623,33 +623,10 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    //public bool Load(string filename) {
-    //    try {
-    //        return true;
-    //    } catch {
-    //        return false;
-    //    }
-    //    // Reticle? r = Reticle.Load(filename);
-    //    // if (r is not null) {
-    //    //     this.Reticle = r;
-    //    //     return true;
-    //    // } else { return false; }
-    //}
+    public void TranslateIndices(int index, int xTranslation, int yTranslation, DoubleSize s) {
+        Model.TranslateAnnotation(index, xTranslation, yTranslation, s);
+        DrawAnnotations(AnnotationCanvas);
+        OnPropertyChanged(nameof(Annotations));
+    }
 
-    // public void SaveImage(Canvas canvas, string filename) {
-    //     canvas.Children.Clear();
-    //
-    //     List<Line> lines = LineSet;
-    //     List<TextBlock> textBlocks = TextBlocksSet;
-    //     foreach (Line line in lines) {
-    //         canvas.Children.Add(line);
-    //     }
-    //     foreach (TextBlock textBlock in textBlocks) {
-    //         canvas.Children.Add(textBlock);
-    //     }
-    //
-    //     Reticle.SaveCanvasToFile(canvas, filename);
-    //
-    //     canvas.Children.Clear();
-    // }
 }
