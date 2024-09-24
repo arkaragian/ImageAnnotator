@@ -29,10 +29,10 @@
             <KeyBinding Key="L"  Command="self:AnnotatorCommands.InsertLine"/>
             <KeyBinding Key="R"  Command="self:AnnotatorCommands.InsertRectangle"/>
             <KeyBinding Key="Delete"  Command="self:AnnotatorCommands.DeleteAnnotation"/>
-            <KeyBinding Key="Up"  Command="self:AnnotatorCommands.TranslateUp"/>
-            <KeyBinding Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>
-            <KeyBinding Key="Left"  Command="self:AnnotatorCommands.TranslateLeft"/>
-            <KeyBinding Key="Right"  Command="self:AnnotatorCommands.TranslateRight"/>
+            <KeyBinding Modifiers="Ctrl" Key="Up"  Command="self:AnnotatorCommands.TranslateUp"/>
+            <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>
+            <KeyBinding Modifiers="Ctrl" Key="Left"  Command="self:AnnotatorCommands.TranslateLeft"/>
+            <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.TranslateRight"/>
     </Window.InputBindings>
 
    
@@ -73,7 +73,7 @@
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Content="Annotations" Background="Gray" Height="Auto"/>
 
-                <ListView Name="AnnotationList" ItemsSource="{Binding Annotations}">
+                <ListView Name="AnnotationList" ItemsSource="{Binding Annotations}" PreviewKeyDown="ListView_PreviewKeyDown">
                     <!-- The bindings in here assume the datacontext within as being each element -->
                     <ListView.ItemTemplate>
                         <DataTemplate>

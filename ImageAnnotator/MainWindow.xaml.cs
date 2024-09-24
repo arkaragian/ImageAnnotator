@@ -120,6 +120,7 @@ public partial class MainWindow : Window {
             Height = AnnotationCanvas.Height,
         };
         ViewModel.TranslateIndices(index, xTranslation: 0, yTranslation: -5, DrawingRegion);
+        e.Handled = true;
     }
 
     private void TranslateDown_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -129,6 +130,7 @@ public partial class MainWindow : Window {
             Height = AnnotationCanvas.Height,
         };
         ViewModel.TranslateIndices(index, xTranslation: 0, yTranslation: 5, DrawingRegion);
+        e.Handled = true;
     }
 
     private void TranslateLeft_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -138,6 +140,7 @@ public partial class MainWindow : Window {
             Height = AnnotationCanvas.Height,
         };
         ViewModel.TranslateIndices(index, xTranslation: -5, yTranslation: 0, DrawingRegion);
+        e.Handled = true;
     }
 
     private void TranslateRight_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -147,7 +150,25 @@ public partial class MainWindow : Window {
             Height = AnnotationCanvas.Height,
         };
         ViewModel.TranslateIndices(index, xTranslation: 5, yTranslation: 0, DrawingRegion);
+        e.Handled = true;
     }
+
+
+    /// <summary>
+    /// Intercepts the keydown event in the List view so that that commands do not
+    /// change the listview selection.
+    /// </summary>
+    private void ListView_PreviewKeyDown(object sender, KeyEventArgs e) {
+        // Check if Ctrl key is pressed
+        if (Keyboard.Modifiers == ModifierKeys.Control) {
+            // Check if an arrow key is pressed
+            if (e.Key is Key.Left or Key.Right or Key.Up or Key.Down) {
+                // Mark the event as handled to prevent ListView selection change
+                e.Handled = false;
+            }
+        }
+    }
+
 
     private void DeleteAnnotationCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
         e.CanExecute = ViewModel.CanDeleteAnnotation;
