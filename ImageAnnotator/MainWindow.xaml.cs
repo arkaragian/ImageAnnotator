@@ -59,11 +59,8 @@ public partial class MainWindow : Window {
         }
     }
 
-    /// <summary>
-    /// Indicates if the node insertion command can be executed.
-    /// </summary>
-    private void InsertNodeCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-        e.CanExecute = ViewModel.CanInsertNode;
+    private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.CanMakeInsertion;
     }
 
     /// <summary>
@@ -71,14 +68,7 @@ public partial class MainWindow : Window {
     /// to wait for a new node click.
     /// </summary>
     private void InsertNodeCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-        ViewModel.BeginNodeInsertion();
-    }
-
-    /// <summary>
-    /// Indicates if the node insertion command can be executed.
-    /// </summary>
-    private void InsertLineCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-        e.CanExecute = ViewModel.CanInsertLine;
+        ViewModel.BeginInsertion(InsertionType.Node);
     }
 
     /// <summary>
@@ -86,14 +76,7 @@ public partial class MainWindow : Window {
     /// to wait for a new node click.
     /// </summary>
     private void InsertLineCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-        ViewModel.BeginLineInsertion();
-    }
-
-    /// <summary>
-    /// Indicates if the node insertion command can be executed.
-    /// </summary>
-    private void InsertRectangleCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-        e.CanExecute = ViewModel.CanInsertRectangle;
+        ViewModel.BeginInsertion(InsertionType.Line);
     }
 
     /// <summary>
@@ -101,7 +84,7 @@ public partial class MainWindow : Window {
     /// to wait for a new node click.
     /// </summary>
     private void InsertRectangleCommand_Executed(object sender, ExecutedRoutedEventArgs e) {
-        ViewModel.BeginRectangleInsertion();
+        ViewModel.BeginInsertion(InsertionType.Rectangle);
     }
 
     private void TranslationCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {

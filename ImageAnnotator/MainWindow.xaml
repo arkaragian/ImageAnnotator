@@ -13,9 +13,9 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="LoadImage" />
-        <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertNodeCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
-        <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertLineCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
-        <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertRectangleCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.InsertNode" CanExecute="InsertCommand_CanExecute" Executed="InsertNodeCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.DeleteAnnotation" CanExecute="DeleteAnnotationCommand_CanExecute" Executed="DeleteAnnotationCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateUp" CanExecute="TranslationCommand_CanExecute" Executed="TranslateUp_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateDown" CanExecute="TranslationCommand_CanExecute" Executed="TranslateDown_Executed"/>
@@ -143,9 +143,9 @@
 
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Norm X:"/>
-                            <Label Content="{Binding NormalizedCursorPosition.X}"  ContentStringFormat="{}{0:#,#.00}"/>
+                            <Label Content="{Binding NormalizedCursorPosition.Coordinates[0]}"  ContentStringFormat="{}{0:#,#.00}"/>
                             <Label Content="Norm Y:"/>
-                            <Label Content="{Binding NormalizedCursorPosition.Y}"  ContentStringFormat="{}{0:#,#.00}"/>
+                            <Label Content="{Binding NormalizedCursorPosition.Coordinates[1]}"  ContentStringFormat="{}{0:#,#.00}"/>
                         </StackPanel>
 
                         <!-- For this control we want the window as the datacotext. We have set this up in code-->

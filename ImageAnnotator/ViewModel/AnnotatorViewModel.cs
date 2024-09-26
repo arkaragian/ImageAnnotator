@@ -74,7 +74,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// <summary>
     /// The normalized position
     /// </summary>
-    public DoublePoint NormalizedCursorPosition { get; set; }
+    public MathPoint NormalizedCursorPosition { get; set; }
 
     /// <summary>
     /// The size of the image
@@ -94,16 +94,17 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     public TextBox? CodeArea { get; set; }
 
     /// <summary>
-    /// A transient annotation that is drawn during user input;
+    /// A transient annotation that is drawn only during user input. That is
+    /// important for
     /// </summary>
     public Shape? TransientAnotation { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
-    /// Indicates if the view is correctly setup to insert a node
+    /// Indicates if an annotation insertion can be performed.
     /// </summary>
-    public bool CanInsertNode {
+    public bool CanMakeInsertion {
         get {
             if (Model.ImagePath is null) {
                 return false;
@@ -113,29 +114,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
     /// <summary>
-    /// Indicates if the view is correctly setup to insert a node
+    /// Indicates if a delete operation can be performed in any annotation.
     /// </summary>
-    public bool CanInsertLine {
-        get {
-            if (Model.ImagePath is null) {
-                return false;
-            }
-            return CurrentInputState is InputState.Idle;
-        }
-    }
-
-    /// <summary>
-    /// Indicates if the view is correctly setup to insert a node
-    /// </summary>
-    public bool CanInsertRectangle {
-        get {
-            if (Model.ImagePath is null) {
-                return false;
-            }
-            return CurrentInputState is InputState.Idle;
-        }
-    }
-
     public bool CanDeleteAnnotation => (CurrentInputState is InputState.Idle) && Model.Annotations.Count > 0;
 
     /// <summary>
@@ -163,6 +143,12 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     private LineBuilder? _lineBuilder;
     private RectangleBuilder? _rectangleBuilder;
 
+    public AnnotatorViewModel() {
+        NormalizedCursorPosition = new() {
+            Coordinates = [0.0, 0.0]
+        };
+    }
+
     /// <summary>
     /// Loads an image to the model
     /// </summary>
@@ -187,6 +173,10 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return null;
     }
 
+    /// <summary>
+    /// Removes the given annotation from the model and redraws the
+    /// list of annotations that the model contains.
+    /// </summary>
     public void DeleteSelectedAnnotation(IAnnotation a) {
         Model.RemoveAnnotation(a);
 
@@ -202,6 +192,7 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// Draws a grid to the specified canvas.
     /// </summary>
     public static void DrawGrid(Canvas? canvas) {
+        //TODO: Implement canvas drawing options.
         if (canvas is null) {
             return;
         }
@@ -307,11 +298,13 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         block.Text = code;
     }
 
-    public static DoublePoint NormalizePoint(Point p, Size controlSize) {
+    public static MathPoint NormalizePoint(Point p, Size controlSize) {
         //The Zero of the image is the top left. For for tikz is the bottom left.
-        DoublePoint normalizedPoint = new() {
-            X = (double)p.X / controlSize.Width,
-            Y = ((double)p.Y / controlSize.Height * -1) + 1
+        MathPoint normalizedPoint = new() {
+            Coordinates = [
+                (double)p.X / controlSize.Width,
+                ((double)p.Y / controlSize.Height * -1) + 1
+            ]
         };
 
         return normalizedPoint;
@@ -322,8 +315,6 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         //Also draw a temp item.
         if (CurrentInputState is InputState.WaitingForInput && CurrentInsertionType is not InsertionType.Node) {
             if (CurrentInsertionType is InsertionType.Rectangle) {
-                //TODO: Resolve which point is upper left and lower right. Reuse
-                //the logic from the helper.
                 if (_rectangleBuilder?.PointA is not null) {
                     MathPoint pointB = new() {
                         Coordinates = [p.X, p.Y]
@@ -398,15 +389,6 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     }
 
 
-    public void BeginNodeInsertion() {
-        StatusMessage = "Click on Image to insert node";
-        CurrentInputState = InputState.WaitingForInput;
-        CurrentInsertionType = InsertionType.Node;
-        OnPropertyChanged(nameof(StatusMessage));
-        OnPropertyChanged(nameof(CurrentInputState));
-        OnPropertyChanged(nameof(CurrentInsertionType));
-        return;
-    }
 
     public void InsertNode(MathPoint imagePoint) {
         StatusMessage = null;
@@ -438,23 +420,24 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
-    public void BeginLineInsertion() {
-        StatusMessage = "Click on First Location";
-        CurrentInputState = InputState.WaitingForInput;
-        CurrentInsertionType = InsertionType.Line;
-        OnPropertyChanged(nameof(StatusMessage));
-        OnPropertyChanged(nameof(CurrentInputState));
-        OnPropertyChanged(nameof(CurrentInsertionType));
-        return;
-    }
+    /// <summary>
+    /// Sets up the viewmodesl to receive additional inputs for annotations
+    /// </summary>
+    public void BeginInsertion(InsertionType insertion) {
+        StatusMessage = insertion switch {
+            InsertionType.Node => "Click on Image to insert node",
+            InsertionType.Line => "Click on First Location",
+            InsertionType.Rectangle => "Click on the First Point",
+            _ => throw new InvalidOperationException("Invalid Enum Member"),
+        };
 
-    public void BeginRectangleInsertion() {
-        StatusMessage = "Click on the First Point";
         CurrentInputState = InputState.WaitingForInput;
-        CurrentInsertionType = InsertionType.Rectangle;
+        CurrentInsertionType = insertion;
+
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
         OnPropertyChanged(nameof(CurrentInsertionType));
+
         return;
     }
 

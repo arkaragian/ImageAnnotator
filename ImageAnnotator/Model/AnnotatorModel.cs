@@ -28,6 +28,9 @@ public class AnnotatorModel {
     /// </summary>
     public List<IAnnotation> Annotations { get; private set; } = [];
 
+    /// <summary>
+    /// A Coordinates trasnformer that transforms WPF Coordinates to tikz coordinates.
+    /// </summary>
     private readonly CoordinatesTransformer _transformer;
 
     public AnnotatorModel() {
