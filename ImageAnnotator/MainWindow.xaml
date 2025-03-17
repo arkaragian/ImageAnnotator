@@ -53,9 +53,9 @@
                 </MenuItem>
 
                 <MenuItem Header="_Anotate">
-                    <MenuItem Header="Insert _Node" Command="self:AnnotatorCommands.InsertNode"></MenuItem>
-                    <MenuItem Header="Insert _Line" Command="self:AnnotatorCommands.InsertLine"> </MenuItem>
-                    <MenuItem Header="Insert _Rectangle"  Command="self:AnnotatorCommands.InsertRectangle"></MenuItem>
+                    <MenuItem Header="Insert _Node" Command="self:AnnotatorCommands.InsertNode" InputGestureText="N"></MenuItem>
+                    <MenuItem Header="Insert _Line" Command="self:AnnotatorCommands.InsertLine" InputGestureText="L"> </MenuItem>
+                    <MenuItem Header="Insert _Rectangle"  Command="self:AnnotatorCommands.InsertRectangle" InputGestureText="R"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
