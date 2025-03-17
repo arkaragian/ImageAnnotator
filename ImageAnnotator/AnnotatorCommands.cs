@@ -11,4 +11,6 @@ public static class AnnotatorCommands {
     public static readonly RoutedUICommand TranslateDown = new("Translates an annotation Down", "TranslateDown", typeof(AnnotatorCommands));
     public static readonly RoutedUICommand TranslateLeft = new("Translates an annotation Left", "TranslateLeft", typeof(AnnotatorCommands));
     public static readonly RoutedUICommand TranslateRight = new("Translates an annotation Right", "TranslateRight", typeof(AnnotatorCommands));
+
+    public static readonly RoutedUICommand CancelInput = new("Cancels Input", "CancelInput", typeof(AnnotatorCommands));
 }

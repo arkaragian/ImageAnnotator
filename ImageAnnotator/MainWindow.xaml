@@ -21,6 +21,9 @@
         <CommandBinding Command="self:AnnotatorCommands.TranslateDown" CanExecute="TranslationCommand_CanExecute" Executed="TranslateDown_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateLeft" CanExecute="TranslationCommand_CanExecute" Executed="TranslateLeft_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateRight" CanExecute="TranslationCommand_CanExecute" Executed="TranslateRight_Executed"/>
+
+        <!-- Cancelation Commands -->
+        <CommandBinding Command="self:AnnotatorCommands.CancelInput" CanExecute="CancelInput_CanExecute" Executed="CancelInput_Executed"/>
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -28,6 +31,9 @@
             <KeyBinding Key="N"  Command="self:AnnotatorCommands.InsertNode"/>
             <KeyBinding Key="L"  Command="self:AnnotatorCommands.InsertLine"/>
             <KeyBinding Key="R"  Command="self:AnnotatorCommands.InsertRectangle"/>
+
+            <KeyBinding Key="Escape"  Command="self:AnnotatorCommands.CancelInput"/>
+
             <KeyBinding Key="Delete"  Command="self:AnnotatorCommands.DeleteAnnotation"/>
             <KeyBinding Modifiers="Ctrl" Key="Up"  Command="self:AnnotatorCommands.TranslateUp"/>
             <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>

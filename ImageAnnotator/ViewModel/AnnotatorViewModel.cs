@@ -420,6 +420,22 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         return;
     }
 
+    public void CancelInsertion() {
+
+        CurrentInputState = InputState.Idle;
+        CurrentInsertionType = null;
+
+        _rectangleBuilder = null;
+        _lineBuilder = null;
+        StatusMessage = null;
+
+        OnPropertyChanged(nameof(StatusMessage));
+        OnPropertyChanged(nameof(CurrentInputState));
+        OnPropertyChanged(nameof(CurrentInsertionType));
+
+        return;
+    }
+
     /// <summary>
     /// Sets up the viewmodesl to receive additional inputs for annotations
     /// </summary>

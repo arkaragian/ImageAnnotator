@@ -59,6 +59,14 @@ public partial class MainWindow : Window {
         }
     }
 
+    private void CancelInput_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = ViewModel.IsWaitingForInput;
+    }
+
+    private void CancelInput_Executed(object sender, ExecutedRoutedEventArgs e) {
+        ViewModel.CancelInsertion();
+    }
+
     private void InsertCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
         e.CanExecute = ViewModel.CanMakeInsertion;
     }
