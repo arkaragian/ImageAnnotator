@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace ImageAnnotator.Model;
 
@@ -45,7 +46,7 @@ public class NodeAnnotation : IAnnotation {
     }
 
     public string ToTikzPointCoordinates() {
-        return $"( {NodeTikzPoint[0]:F3}, {NodeTikzPoint[1]:F3} )";
+        return $"( {NodeTikzPoint[0].ToString("F3", CultureInfo.InvariantCulture)}, {NodeTikzPoint[1].ToString("F3", CultureInfo.InvariantCulture)} )";
 
     }
 
@@ -59,7 +60,13 @@ public class NodeAnnotation : IAnnotation {
 
         string no_spaces_name = Name.Replace(" ", "");
 
-        string s = $$"""\node[anchor=south west,inner sep=0] ({{no_spaces_name}}) at ( {{NodeTikzPoint[0]:F3}}, {{NodeTikzPoint[1]:F3}} ) { {{Text}} };""";
+        string s = $$"""
+            \node[anchor=south west,inner sep=0] ({{no_spaces_name}})
+                at (
+                    {{NodeTikzPoint[0].ToString("F3", CultureInfo.InvariantCulture)}},
+                    {{NodeTikzPoint[1].ToString("F3", CultureInfo.InvariantCulture)}}
+                ) { {{Text}} };
+            """;
 
         _ = builder.Append(s);
         return builder.ToString();
