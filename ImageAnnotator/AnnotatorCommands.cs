@@ -13,4 +13,8 @@ public static class AnnotatorCommands {
     public static readonly RoutedUICommand TranslateRight = new("Translates an annotation Right", "TranslateRight", typeof(AnnotatorCommands));
 
     public static readonly RoutedUICommand CancelInput = new("Cancels Input", "CancelInput", typeof(AnnotatorCommands));
+
+
+    public static readonly RoutedUICommand ZoomIn = new("Zooms Canvas Out", "ZoomIn", typeof(AnnotatorCommands));
+    public static readonly RoutedUICommand ZoomOut = new("Zooms Canvas In", "ZoomOut", typeof(AnnotatorCommands));
 }

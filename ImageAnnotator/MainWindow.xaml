@@ -22,6 +22,10 @@
         <CommandBinding Command="self:AnnotatorCommands.TranslateLeft" CanExecute="TranslationCommand_CanExecute" Executed="TranslateLeft_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateRight" CanExecute="TranslationCommand_CanExecute" Executed="TranslateRight_Executed"/>
 
+
+        <CommandBinding Command="self:AnnotatorCommands.ZoomIn" CanExecute="ZoomCommand_CanExecute" Executed="ZoomIn_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.ZoomOut" CanExecute="ZoomCommand_CanExecute" Executed="ZoomOut_Executed"/>
+
         <!-- Cancelation Commands -->
         <CommandBinding Command="self:AnnotatorCommands.CancelInput" CanExecute="CancelInput_CanExecute" Executed="CancelInput_Executed"/>
     </Window.CommandBindings>
@@ -39,6 +43,10 @@
             <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>
             <KeyBinding Modifiers="Ctrl" Key="Left"  Command="self:AnnotatorCommands.TranslateLeft"/>
             <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.TranslateRight"/>
+
+        
+            <KeyBinding Modifiers="Ctrl" Key="OemPlus"  Command="self:AnnotatorCommands.ZoomIn"/>
+            <KeyBinding Modifiers="Ctrl" Key="OemMinus"  Command="self:AnnotatorCommands.ZoomOut"/>
     </Window.InputBindings>
 
    
@@ -63,6 +71,20 @@
                     <MenuItem Header="Insert _Line" Command="self:AnnotatorCommands.InsertLine" InputGestureText="L"> </MenuItem>
                     <MenuItem Header="Insert _Rectangle"  Command="self:AnnotatorCommands.InsertRectangle" InputGestureText="R"></MenuItem>
                 </MenuItem>
+
+
+                <MenuItem Header="_Zoom">
+                    <MenuItem Header="In" Command="self:AnnotatorCommands.ZoomIn"></MenuItem>
+                    <MenuItem Header="Out" Command="self:AnnotatorCommands.ZoomOut"> </MenuItem>
+                </MenuItem>
+
+
+                <MenuItem Header="_Translate">
+                    <MenuItem Header="Translate Up" Command="self:AnnotatorCommands.TranslateUp"></MenuItem>
+                    <MenuItem Header="Translate Down" Command="self:AnnotatorCommands.TranslateDown"></MenuItem>
+                    <MenuItem Header="Translate Left" Command="self:AnnotatorCommands.TranslateLeft"></MenuItem>
+                    <MenuItem Header="Translate Right" Command="self:AnnotatorCommands.TranslateRight"></MenuItem>
+                </MenuItem>
             </Menu>
         </DockPanel>
 
@@ -80,7 +102,10 @@
                 <Label Content="Annotations" Background="Gray" Height="Auto"/>
 
                 <ListView Name="AnnotationList" ItemsSource="{Binding Annotations}" PreviewKeyDown="ListView_PreviewKeyDown">
-                    <!-- The bindings in here assume the datacontext within as being each element -->
+                    <!--
+                        The bindings in here assume the datacontext within as
+                        being each element which is the case in listviews
+                    -->
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <UserControls:AnnotationListItemControl AnnotationName="{Binding Name}"/>
