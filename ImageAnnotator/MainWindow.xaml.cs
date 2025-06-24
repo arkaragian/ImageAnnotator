@@ -16,7 +16,9 @@ public partial class MainWindow : Window {
     /// </summary>
     private readonly AnnotatorViewModel ViewModel;
 
+    private readonly TransformGroup _transformGroup = new();
     private readonly ScaleTransform _scaleTransform = new(1.0, 1.0);
+    private readonly TranslateTransform _translateTransform = new(0.0, 0.0);
 
     public MainWindow() {
         InitializeComponent();
@@ -31,33 +33,109 @@ public partial class MainWindow : Window {
         //The status bar needs a different data context
         WindowInfo.DataContext = this;
 
-        GridRowContainer.LayoutTransform = _scaleTransform;
+        _transformGroup.Children.Add(_scaleTransform);
+        _transformGroup.Children.Add(_translateTransform);
+
+        //GridRowContainer.LayoutTransform = _transformGroup;
+        GridRowContainer.RenderTransform = _transformGroup;
 
         GridRowContainer.MouseWheel += Canvas_MouseWheel;
 
     }
 
     private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e) {
-        // Determine the zoom direction
+        Point mousePos = e.GetPosition(GridRowContainer);
+
         if (e.Delta > 0) {
-            ZoomIn();
+            Zoom(1.1, mousePos);
         } else {
-            ZoomOut();
+            Zoom(1 / 1.1, mousePos);
         }
     }
 
-    private void ZoomIn() {
-        _scaleTransform.ScaleX += 0.1;
-        _scaleTransform.ScaleY += 0.1;
+    private void Zoom(double zoomFactor, Point center) {
+        // Current scale
+        double oldScale = _scaleTransform.ScaleX;
+
+        // New scale
+        double newScale = oldScale * zoomFactor;
+        if (newScale is < 0.2 or > 10.0) {
+            return;
+        }
+
+        // Adjust the translation to maintain focus on the zoom center
+        double offsetX = center.X * (1 - zoomFactor);
+        double offsetY = center.Y * (1 - zoomFactor);
+
+        _scaleTransform.ScaleX = newScale;
+        _scaleTransform.ScaleY = newScale;
+        _translateTransform.X += offsetX;
+        _translateTransform.Y += offsetY;
     }
 
-    private void ZoomOut() {
-        if (_scaleTransform.ScaleX > 0.2) // prevent too much zoom out
-        {
-            _scaleTransform.ScaleX -= 0.1;
-            _scaleTransform.ScaleY -= 0.1;
-        }
+
+    //private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e) {
+    //    Point mousePosition = e.GetPosition(GridRowContainer);
+    //    // Determine the zoom direction
+    //    if (e.Delta > 0) {
+    //        ZoomIn(mousePosition);
+    //    } else {
+    //        ZoomOut(mousePosition);
+    //    }
+    //}
+
+    //private void ZoomIn(Point mousePosition) {
+    //    Console.WriteLine($"Zoomed in at mouse position ({mousePosition.X},{mousePosition.Y})");
+    //    _scaleTransform.ScaleX += 0.1;
+    //    _scaleTransform.ScaleY += 0.1;
+
+    //    //_translateTransform.X = mousePosition.X - (mousePosition.X * _scaleTransform.ScaleX);
+    //    //_translateTransform.Y = mousePosition.Y - (mousePosition.Y * _scaleTransform.ScaleY);
+    //}
+
+    private void ZoomIn(Point mousePosition) {
+        double oldScale = _scaleTransform.ScaleX;
+        double newScale = oldScale + 0.1;
+
+        double offsetX = mousePosition.X;
+        double offsetY = mousePosition.Y;
+
+        _scaleTransform.ScaleX = newScale;
+        _scaleTransform.ScaleY = newScale;
+
+        _translateTransform.X -= offsetX * (newScale - oldScale);
+        _translateTransform.Y -= offsetY * (newScale - oldScale);
     }
+
+    private void ZoomOut(Point mousePosition) {
+        if (_scaleTransform.ScaleX <= 0.2) {
+            return;
+        }
+
+        double oldScale = _scaleTransform.ScaleX;
+        double newScale = oldScale - 0.1;
+
+        double offsetX = mousePosition.X;
+        double offsetY = mousePosition.Y;
+
+        _scaleTransform.ScaleX = newScale;
+        _scaleTransform.ScaleY = newScale;
+
+        _translateTransform.X += offsetX * (oldScale - newScale);
+        _translateTransform.Y += offsetY * (oldScale - newScale);
+    }
+
+
+    //private void ZoomOut() {
+    //    if (_scaleTransform.ScaleX == 1.0) {
+    //        return;
+    //    }
+    //    if (_scaleTransform.ScaleX > 0.2) // prevent too much zoom out
+    //    {
+    //        _scaleTransform.ScaleX -= 0.1;
+    //        _scaleTransform.ScaleY -= 0.1;
+    //    }
+    //}
 
     private void CancelInput_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
         e.CanExecute = ViewModel.IsWaitingForInput;
@@ -305,5 +383,19 @@ public partial class MainWindow : Window {
 
         ViewModel.UpdateCursorPosition(np, s);
         e.Handled = true;
+    }
+
+    private void ZoomCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = true;
+    }
+
+    private void ZoomIn_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _scaleTransform.ScaleX += 0.1;
+        _scaleTransform.ScaleY += 0.1;
+    }
+
+    private void ZoomOut_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _scaleTransform.ScaleX -= 0.1;
+        _scaleTransform.ScaleY -= 0.1;
     }
 } //End of class
