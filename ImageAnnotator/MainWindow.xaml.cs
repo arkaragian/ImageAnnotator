@@ -398,4 +398,22 @@ public partial class MainWindow : Window {
         _scaleTransform.ScaleX -= 0.1;
         _scaleTransform.ScaleY -= 0.1;
     }
+
+    private void CanvasTranslateUp_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _translateTransform.Y -= 10;
+    }
+
+    private void CanvasTranslateDown_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _translateTransform.Y += 10;
+    }
+
+    private void CanvasTranslateLeft_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _translateTransform.X -= 10;
+    }
+
+    private void CanvasTranslateRight_Executed(object sender, ExecutedRoutedEventArgs e) {
+        _translateTransform.X += 10;
+    }
+
+
 } //End of class

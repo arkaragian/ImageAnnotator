@@ -17,11 +17,18 @@
         <CommandBinding Command="self:AnnotatorCommands.InsertLine" CanExecute="InsertCommand_CanExecute" Executed="InsertLineCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.InsertRectangle" CanExecute="InsertCommand_CanExecute" Executed="InsertRectangleCommand_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.DeleteAnnotation" CanExecute="DeleteAnnotationCommand_CanExecute" Executed="DeleteAnnotationCommand_Executed"/>
+
+        <!-- Annotation Translate -->
         <CommandBinding Command="self:AnnotatorCommands.TranslateUp" CanExecute="TranslationCommand_CanExecute" Executed="TranslateUp_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateDown" CanExecute="TranslationCommand_CanExecute" Executed="TranslateDown_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateLeft" CanExecute="TranslationCommand_CanExecute" Executed="TranslateLeft_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.TranslateRight" CanExecute="TranslationCommand_CanExecute" Executed="TranslateRight_Executed"/>
 
+        <!-- Canvas Translate -->
+        <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateUp" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateUp_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateDown" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateDown_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateLeft" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateLeft_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateRight" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateRight_Executed"/>
 
         <CommandBinding Command="self:AnnotatorCommands.ZoomIn" CanExecute="ZoomCommand_CanExecute" Executed="ZoomIn_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.ZoomOut" CanExecute="ZoomCommand_CanExecute" Executed="ZoomOut_Executed"/>
@@ -39,14 +46,21 @@
             <KeyBinding Key="Escape"  Command="self:AnnotatorCommands.CancelInput"/>
 
             <KeyBinding Key="Delete"  Command="self:AnnotatorCommands.DeleteAnnotation"/>
-            <KeyBinding Modifiers="Ctrl" Key="Up"  Command="self:AnnotatorCommands.TranslateUp"/>
-            <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.TranslateDown"/>
-            <KeyBinding Modifiers="Ctrl" Key="Left"  Command="self:AnnotatorCommands.TranslateLeft"/>
-            <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.TranslateRight"/>
+
+
+            <KeyBinding Modifiers="Ctrl" Key="Up"  Command="self:AnnotatorCommands.CanvasTranslateUp"/>
+            <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.CanvasTranslateDown"/>
+            <KeyBinding Modifiers="Ctrl" Key="Left"  Command="self:AnnotatorCommands.CanvasTranslateLeft"/>
+            <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.CanvasTranslateRight"/>
 
         
+            <!-- Main Keyboard -->
             <KeyBinding Modifiers="Ctrl" Key="OemPlus"  Command="self:AnnotatorCommands.ZoomIn"/>
             <KeyBinding Modifiers="Ctrl" Key="OemMinus"  Command="self:AnnotatorCommands.ZoomOut"/>
+
+            <!-- Numpad -->
+            <KeyBinding Modifiers="Ctrl" Key="Add"  Command="self:AnnotatorCommands.ZoomIn"/>
+            <KeyBinding Modifiers="Ctrl" Key="Subtract"  Command="self:AnnotatorCommands.ZoomOut"/>
     </Window.InputBindings>
 
    
@@ -74,8 +88,8 @@
 
 
                 <MenuItem Header="_Zoom">
-                    <MenuItem Header="In" Command="self:AnnotatorCommands.ZoomIn"></MenuItem>
-                    <MenuItem Header="Out" Command="self:AnnotatorCommands.ZoomOut"> </MenuItem>
+                    <MenuItem Header="In" Command="self:AnnotatorCommands.ZoomIn" InputGestureText="Ctrl +"></MenuItem>
+                    <MenuItem Header="Out" Command="self:AnnotatorCommands.ZoomOut" InputGestureText="Ctrl -"> </MenuItem>
                 </MenuItem>
 
 
@@ -84,6 +98,13 @@
                     <MenuItem Header="Translate Down" Command="self:AnnotatorCommands.TranslateDown"></MenuItem>
                     <MenuItem Header="Translate Left" Command="self:AnnotatorCommands.TranslateLeft"></MenuItem>
                     <MenuItem Header="Translate Right" Command="self:AnnotatorCommands.TranslateRight"></MenuItem>
+                </MenuItem>
+
+                <MenuItem Header="_Canvas">
+                    <MenuItem Header="Canvas Translate Up" Command="self:AnnotatorCommands.CanvasTranslateUp"></MenuItem>
+                    <MenuItem Header="Canvas Translate Down" Command="self:AnnotatorCommands.CanvasTranslateDown"></MenuItem>
+                    <MenuItem Header="Canvas Translate Left" Command="self:AnnotatorCommands.CanvasTranslateLeft"></MenuItem>
+                    <MenuItem Header="Canvas Translate Right" Command="self:AnnotatorCommands.CanvasTranslateRight"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
