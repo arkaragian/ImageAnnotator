@@ -1,5 +1,6 @@
 ﻿using ImageAnnotator.Model;
 using ImageAnnotator.ViewModel;
+using ImageAnnotator.Services;
 using libGeometry;
 using Microsoft.Win32;
 using System;
@@ -20,6 +21,8 @@ public partial class MainWindow : Window {
     private readonly ScaleTransform _scaleTransform = new(1.0, 1.0);
     private readonly TranslateTransform _translateTransform = new(0.0, 0.0);
 
+    private readonly CanvasMouseSnapService _snapService = new();
+
     public MainWindow() {
         InitializeComponent();
         ViewModel = new() {
@@ -27,6 +30,7 @@ public partial class MainWindow : Window {
             AnnotationCanvas = AnnotationCanvas,
             GridCanvas = GridCanvas,
             CodeArea = CodeText,
+            SnapService = _snapService
         };
         Title = "Image Annotator";
         DataContext = ViewModel;
@@ -40,6 +44,8 @@ public partial class MainWindow : Window {
         GridRowContainer.RenderTransform = _transformGroup;
 
         GridRowContainer.MouseWheel += Canvas_MouseWheel;
+
+        //GridRowContainer.MouseMove += Canvas_MouseMove;
 
     }
 
@@ -72,6 +78,28 @@ public partial class MainWindow : Window {
         _translateTransform.X += offsetX;
         _translateTransform.Y += offsetY;
     }
+
+    //private void Canvas_MouseMove(object sender, MouseEventArgs e) {
+    //    Point mousePos = e.GetPosition(GridRowContainer);
+
+
+
+    //    // Adjust tolerance by zoom: larger tolerance when zoomed out, smaller when zoomed in.
+    //    //double zoom = _getZoomScale();
+    //    double tol = 20.0;//_baseSnapToleranceDIP / Math.Max(zoom, 1e-6);
+
+    //    if (_snapService.TrySnap(mousePos, tol)) {
+    //        //_adorner.SetSnap(snapped);
+    //        Mouse.OverrideCursor = Cursors.Wait;
+    //        // Expose snapped to your toolchain here.
+    //        // Example: CurrentTool.OnHover(snapped, isSnapped: true);
+    //    } else {
+    //        //_adorner.SetSnap(null);
+    //        Mouse.OverrideCursor = null;
+    //        // Example: CurrentTool.OnHover(mouseCanvas, isSnapped: false);
+    //    }
+
+    //}
 
 
     //private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e) {
@@ -306,6 +334,7 @@ public partial class MainWindow : Window {
         if (ViewModel.IsWaitingForNodeInput) {
             ViewModel.ClearTransientAnnotation();
             ViewModel.InsertNode(mp);
+            _snapService.PointCluster.Add(p);
             return;
         }
 
@@ -362,7 +391,6 @@ public partial class MainWindow : Window {
     /// Position and draw a transient annotation.
     /// </summary>
     private void Image_MouseMove(object sender, MouseEventArgs e) {
-        Console.WriteLine("Mouse Move Event!");
         if (e.LeftButton == MouseButtonState.Pressed) {
             AnnotationCanvasClick(sender, e);
             return;
@@ -382,6 +410,22 @@ public partial class MainWindow : Window {
         };
 
         ViewModel.UpdateCursorPosition(np, s);
+
+
+        double tol = 0.15;//_baseSnapToleranceDIP / Math.Max(zoom, 1e-6);
+
+        if (_snapService.TrySnap(ViewModel.NormalizedCursorPosition, tol)) {
+            //_adorner.SetSnap(snapped);
+            Mouse.OverrideCursor = Cursors.Wait;
+            // Expose snapped to your toolchain here.
+            // Example: CurrentTool.OnHover(snapped, isSnapped: true);
+        } else {
+            //_adorner.SetSnap(null);
+            Mouse.OverrideCursor = null;
+            // Example: CurrentTool.OnHover(mouseCanvas, isSnapped: false);
+        }
+
+
         e.Handled = true;
     }
 

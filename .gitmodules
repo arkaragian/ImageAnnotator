@@ -1,0 +1,3 @@
+[submodule "libTikz"]
+	path = libTikz
+	url = https://github.com/arkaragian/libTikz.git

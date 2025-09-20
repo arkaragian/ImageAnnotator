@@ -1,3 +1,5 @@
+using libGeometry;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -7,6 +9,8 @@ public class RectangleAnnotation : IAnnotation {
     public string Name { get; set; } = "Rectangle";
     public required NodeAnnotation UpperLeftNode { get; set; }
     public required NodeAnnotation LowerRightNode { get; set; }
+
+    public List<MathPoint> SnapPoints => [UpperLeftNode.SnapPoints[0], LowerRightNode.SnapPoints[1]];
 
     public void ResizeCoordinates(DoubleSize newSize) {
         UpperLeftNode.ResizeCoordinates(newSize);

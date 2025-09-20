@@ -149,10 +149,12 @@
                            Name="ImageDisplayControl"
                            d:DesignHeight="400"
                            MouseMove="Image_MouseMove"/>
+                    <!-- In this canvas only a grid is drawn -->
                     <Canvas Background="Transparent"
                             Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
                             Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"
                             Name="GridCanvas"/>
+                    <!-- In this canvas only annotations are drawn -->
                     <Canvas Background="Transparent"
                             Width="{Binding ActualWidth, ElementName=ImageDisplayControl}"
                             Height="{Binding ActualHeight, ElementName=ImageDisplayControl}"

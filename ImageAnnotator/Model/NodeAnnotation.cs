@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace ImageAnnotator.Model;
 
@@ -32,6 +33,8 @@ public class NodeAnnotation : IAnnotation {
     /// The tikz coordinates
     /// </summary>
     public required MathPoint NodeTikzPoint { get; set; }
+
+    public List<MathPoint> SnapPoints => [NodeImageNormalizedPoint];
 
     public void ResizeCoordinates(DoubleSize newSize) {
         //Since we have normalized coordinates we can use those and the new

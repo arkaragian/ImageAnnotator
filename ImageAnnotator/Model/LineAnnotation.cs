@@ -1,4 +1,6 @@
 using ImageAnnotator.Model.Shapes;
+using libGeometry;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -13,6 +15,7 @@ public class LineAnnotation : IAnnotation {
     public required NodeAnnotation StartPoint { get; set; }
     public required NodeAnnotation EndPoint { get; set; }
 
+    public List<MathPoint> SnapPoints => [StartPoint.SnapPoints[0], EndPoint.SnapPoints[0]];
 
     public void ResizeCoordinates(DoubleSize newSize) {
         StartPoint.ResizeCoordinates(newSize);

@@ -1,3 +1,5 @@
+using libGeometry;
+using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -11,6 +13,8 @@ public interface IAnnotation {
     /// The name of the annotation. That is the name that is used by the application.
     /// </summary>
     string Name { get; set; }
+
+    List<MathPoint> SnapPoints { get; }
 
     /// <summary>
     /// Recalculates the coordinates based on a new control size.
@@ -37,6 +41,7 @@ public interface IAnnotation {
     /// number of spaces.
     /// </param>
     string ToCode(uint? identation);
+
 
     void Translate(int xTranslation, int yTranslation, DoubleSize size);
 }

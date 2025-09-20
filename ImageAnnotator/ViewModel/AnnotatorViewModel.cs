@@ -1,5 +1,6 @@
 ﻿using ImageAnnotator.Model;
 using ImageAnnotator.Model.Shapes;
+using ImageAnnotator.Services;
 using ImageAnnotator.Tikz;
 using libGeometry;
 using System;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ImageAnnotator.ViewModel;
 
@@ -142,6 +144,8 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
 
     private LineBuilder? _lineBuilder;
     private RectangleBuilder? _rectangleBuilder;
+
+    public CanvasMouseSnapService? SnapService { get; set; }
 
     public AnnotatorViewModel() {
         NormalizedCursorPosition = new() {
@@ -412,6 +416,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         CurrentInsertionType = null;
 
         DrawAnnotations(AnnotationCanvas);
+        if (SnapService is not null) {
+            SnapService.Annotations = Model.Annotations;
+        }
 
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
@@ -532,6 +539,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         Model.Annotations.Add(la);
 
         DrawAnnotations(AnnotationCanvas);
+        if (SnapService is not null) {
+            SnapService.Annotations = Model.Annotations;
+        }
 
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
@@ -614,6 +624,9 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
         Model.Annotations.Add(ra);
 
         DrawAnnotations(AnnotationCanvas);
+        if (SnapService is not null) {
+            SnapService.Annotations = Model.Annotations;
+        }
 
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(CurrentInputState));
