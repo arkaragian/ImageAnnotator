@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace ImageAnnotator.ViewModel;
 
@@ -139,6 +138,16 @@ public class AnnotatorViewModel : INotifyPropertyChanged {
     /// Indicates if the view is waiting for a node input
     /// </summary>
     public bool IsWaitingForRectangleInput => CurrentInsertionType is InsertionType.Rectangle;
+
+    private bool _isSnapEnabled;
+
+    public bool IsSnapEnabled {
+        get => _isSnapEnabled;
+        set {
+            _isSnapEnabled = value;
+            OnPropertyChanged(nameof(IsSnapEnabled));
+        }
+    }
 
     public ObservableCollection<IAnnotation> Annotations => new(Model.Annotations);
 

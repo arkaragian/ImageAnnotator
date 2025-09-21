@@ -17,6 +17,7 @@ public static class AnnotatorCommands {
     public static readonly RoutedUICommand CanvasTranslateDown = new("Translates the canvas Down", "CanvasTranslateDown", typeof(AnnotatorCommands));
     public static readonly RoutedUICommand CanvasTranslateLeft = new("Translates the canvas Left", "CanvasTranslateLeft", typeof(AnnotatorCommands));
     public static readonly RoutedUICommand CanvasTranslateRight = new("Translates the canvas Right", "CanvasTranslateRight", typeof(AnnotatorCommands));
+    public static readonly RoutedUICommand CanvasToggleSnap = new("Toggles Canvas Snapping Behavior", "CanvasToggleSnap", typeof(AnnotatorCommands));
 
     public static readonly RoutedUICommand CancelInput = new("Cancels Input", "CancelInput", typeof(AnnotatorCommands));
 

@@ -29,6 +29,7 @@
         <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateDown" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateDown_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateLeft" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateLeft_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.CanvasTranslateRight" CanExecute="ZoomCommand_CanExecute" Executed="CanvasTranslateRight_Executed"/>
+        <CommandBinding Command="self:AnnotatorCommands.CanvasToggleSnap" CanExecute="CanvasToggleSnap_CanExecute" Executed="CanvasToggleSnap_Executed"/>
 
         <CommandBinding Command="self:AnnotatorCommands.ZoomIn" CanExecute="ZoomCommand_CanExecute" Executed="ZoomIn_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.ZoomOut" CanExecute="ZoomCommand_CanExecute" Executed="ZoomOut_Executed"/>
@@ -52,6 +53,7 @@
             <KeyBinding Modifiers="Ctrl" Key="Down"  Command="self:AnnotatorCommands.CanvasTranslateDown"/>
             <KeyBinding Modifiers="Ctrl" Key="Left"  Command="self:AnnotatorCommands.CanvasTranslateLeft"/>
             <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.CanvasTranslateRight"/>
+            <KeyBinding Key="S"  Command="self:AnnotatorCommands.CanvasToggleSnap"/>
 
         
             <!-- Main Keyboard -->
@@ -105,6 +107,7 @@
                     <MenuItem Header="Canvas Translate Down" Command="self:AnnotatorCommands.CanvasTranslateDown"></MenuItem>
                     <MenuItem Header="Canvas Translate Left" Command="self:AnnotatorCommands.CanvasTranslateLeft"></MenuItem>
                     <MenuItem Header="Canvas Translate Right" Command="self:AnnotatorCommands.CanvasTranslateRight"></MenuItem>
+                    <MenuItem Header="_Snap" IsCheckable="true" IsChecked="{Binding IsSnapEnabled, Mode=TwoWay}" Command="self:AnnotatorCommands.CanvasToggleSnap"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -200,15 +203,18 @@
                             <Label Content="{Binding NormalizedCursorPosition.Coordinates[0]}"  ContentStringFormat="{}{0:#,#.00}"/>
                             <Label Content="Norm Y:"/>
                             <Label Content="{Binding NormalizedCursorPosition.Coordinates[1]}"  ContentStringFormat="{}{0:#,#.00}"/>
+                            <Label Content="Snap:"/>
+                            <Label Content="{Binding IsSnapEnabled}"/>
                         </StackPanel>
 
-                        <!-- For this control we want the window as the datacotext. We have set this up in code-->
+                        <!-- For this control we want the window as the datacotext.
+                        We have set this up in code-->
                         <StackPanel Name="WindowInfo" Orientation="Horizontal">
                             <Label Content="Window Width:"/>
-                            <Label Content="{Binding Width}"/>
+                            <Label Content="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"/>
                             <Separator Width="100px" Visibility="Hidden"/>
                             <Label Content="Window Height:"/>
-                            <Label Content="{Binding Height}"/>
+                            <Label Content="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </StackPanel>
                 </StackPanel>
             </StatusBarItem>

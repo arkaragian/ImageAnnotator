@@ -7,6 +7,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace ImageAnnotator;
 
@@ -35,7 +36,7 @@ public partial class MainWindow : Window {
         Title = "Image Annotator";
         DataContext = ViewModel;
         //The status bar needs a different data context
-        WindowInfo.DataContext = this;
+        //WindowInfo.DataContext = this;
 
         _transformGroup.Children.Add(_scaleTransform);
         _transformGroup.Children.Add(_translateTransform);
@@ -412,17 +413,20 @@ public partial class MainWindow : Window {
         ViewModel.UpdateCursorPosition(np, s);
 
 
-        double tol = 0.15;//_baseSnapToleranceDIP / Math.Max(zoom, 1e-6);
+        if (ViewModel.IsSnapEnabled) {
+            Console.WriteLine("Checking Snap");
+            double tol = 0.15;//_baseSnapToleranceDIP / Math.Max(zoom, 1e-6);
 
-        if (_snapService.TrySnap(ViewModel.NormalizedCursorPosition, tol)) {
-            //_adorner.SetSnap(snapped);
-            Mouse.OverrideCursor = Cursors.Wait;
-            // Expose snapped to your toolchain here.
-            // Example: CurrentTool.OnHover(snapped, isSnapped: true);
-        } else {
-            //_adorner.SetSnap(null);
-            Mouse.OverrideCursor = null;
-            // Example: CurrentTool.OnHover(mouseCanvas, isSnapped: false);
+            if (_snapService.TrySnap(ViewModel.NormalizedCursorPosition, tol)) {
+                //_adorner.SetSnap(snapped);
+                Mouse.OverrideCursor = Cursors.Wait;
+                // Expose snapped to your toolchain here.
+                // Example: CurrentTool.OnHover(snapped, isSnapped: true);
+            } else {
+                //_adorner.SetSnap(null);
+                Mouse.OverrideCursor = null;
+                // Example: CurrentTool.OnHover(mouseCanvas, isSnapped: false);
+            }
         }
 
 
@@ -457,6 +461,25 @@ public partial class MainWindow : Window {
 
     private void CanvasTranslateRight_Executed(object sender, ExecutedRoutedEventArgs e) {
         _translateTransform.X += 10;
+    }
+
+
+    private void CanvasToggleSnap_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+        e.CanExecute = true;
+    }
+
+    private void CanvasToggleSnap_Executed(object sender, ExecutedRoutedEventArgs e) {
+        AnnotatorViewModel vm = (AnnotatorViewModel)DataContext;
+
+        if (e.OriginalSource is MenuItem mi) {
+            // Click path: IsChecked already reflects the new state
+            vm.IsSnapEnabled = mi.IsChecked;
+        } else {
+            // Keyboard path (no MenuItem involved): toggle explicitly
+            vm.IsSnapEnabled = !vm.IsSnapEnabled;
+        }
+
+        e.Handled = true;
     }
 
 
