@@ -24,6 +24,9 @@ public partial class MainWindow : Window {
 
     private readonly CanvasMouseSnapService _snapService = new();
 
+    private Point? _lastDragPosition;
+    private bool _isDragging;
+
     public MainWindow() {
         InitializeComponent();
         ViewModel = new() {
@@ -482,5 +485,39 @@ public partial class MainWindow : Window {
         e.Handled = true;
     }
 
+    private void Container_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+        _isDragging = true;
+        _lastDragPosition = e.GetPosition(this);
 
+        if (sender is UIElement element) {
+            element.CaptureMouse();
+        }
+    }
+
+    private void Container_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+        if (!_isDragging) {
+            return;
+        }
+
+        _isDragging = false;
+        if (sender is UIElement element) {
+            element.ReleaseMouseCapture();
+        }
+    }
+
+    private void Container_PreviewMouseMove(object sender, MouseEventArgs e) {
+        if (!_isDragging || !_lastDragPosition.HasValue) {
+            return;
+        }
+
+        Point currentPosition = e.GetPosition(this);
+        double deltaX = currentPosition.X - _lastDragPosition.Value.X;
+        double deltaY = currentPosition.Y - _lastDragPosition.Value.Y;
+
+        _translateTransform.X += deltaX;
+        _translateTransform.Y += deltaY;
+
+        _lastDragPosition = currentPosition;
+        e.Handled = true;
+    }
 } //End of class

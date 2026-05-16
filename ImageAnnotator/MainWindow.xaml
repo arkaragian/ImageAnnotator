@@ -34,7 +34,7 @@
         <CommandBinding Command="self:AnnotatorCommands.ZoomIn" CanExecute="ZoomCommand_CanExecute" Executed="ZoomIn_Executed"/>
         <CommandBinding Command="self:AnnotatorCommands.ZoomOut" CanExecute="ZoomCommand_CanExecute" Executed="ZoomOut_Executed"/>
 
-        <!-- Cancelation Commands -->
+        <!-- Cancellation Commands -->
         <CommandBinding Command="self:AnnotatorCommands.CancelInput" CanExecute="CancelInput_CanExecute" Executed="CancelInput_Executed"/>
     </Window.CommandBindings>
 
@@ -55,7 +55,7 @@
             <KeyBinding Modifiers="Ctrl" Key="Right"  Command="self:AnnotatorCommands.CanvasTranslateRight"/>
             <KeyBinding Key="S"  Command="self:AnnotatorCommands.CanvasToggleSnap"/>
 
-        
+
             <!-- Main Keyboard -->
             <KeyBinding Modifiers="Ctrl" Key="OemPlus"  Command="self:AnnotatorCommands.ZoomIn"/>
             <KeyBinding Modifiers="Ctrl" Key="OemMinus"  Command="self:AnnotatorCommands.ZoomOut"/>
@@ -65,7 +65,7 @@
             <KeyBinding Modifiers="Ctrl" Key="Subtract"  Command="self:AnnotatorCommands.ZoomOut"/>
     </Window.InputBindings>
 
-   
+
     <!-- This grid contains the meneu the "Main Interaction Surface" and the status bar-->
     <Grid>
         <Grid.RowDefinitions>
@@ -142,10 +142,16 @@
             <GridSplitter Grid.Column="1"  HorizontalAlignment="Stretch" />
 
             <!-- We want to be able to zoom in -->
-            <!-- <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"> -->
-            <Border Grid.Column="2" ClipToBounds="True" Background="Transparent">
+            <!-- <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" ClipToBounds="True"> -->
+            <Border 
+                Grid.Column="2" 
+                ClipToBounds="True" 
+                Background="Transparent"
+                PreviewMouseRightButtonDown="Container_PreviewMouseRightButtonDown"
+                PreviewMouseRightButtonUp="Container_PreviewMouseRightButtonUp"
+                PreviewMouseMove="Container_PreviewMouseMove">
                 <!--
-                    Elements in a grid canvas are overlayed on top each other that is
+                    Elements in a grid canvas are overlaid on top each other that is
                     why we specify grid here
                 -->
                 <Grid Name="GridRowContainer">
@@ -178,10 +184,10 @@
                     </Canvas>
                 </Grid>
             </Border>
+            <!-- </ScrollViewer> -->
         </Grid>
 
         <TextBox Name="CodeText" Grid.Row="2" FontSize="12" IsReadOnly="True"/>
-        
 
         <StatusBar Grid.Row="3" >
             <StatusBarItem>
