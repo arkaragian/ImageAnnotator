@@ -151,7 +151,7 @@
                 PreviewMouseRightButtonUp="Container_PreviewMouseRightButtonUp"
                 PreviewMouseMove="Container_PreviewMouseMove">
                 <!--
-                    Elements in a grid canvas are overlaid on top each other that is
+                    Elements in a grid canvas are overlayed on top each other that is
                     why we specify grid here
                 -->
                 <Grid Name="GridRowContainer">
